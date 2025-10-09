@@ -1,0 +1,198 @@
+package edu.exam_online.exam_online_system.service.impl;
+
+
+import com.nimbusds.jose.JOSEException;
+import edu.exam_online.exam_online_system.commons.constant.CodeTypeEnum;
+import edu.exam_online.exam_online_system.dto.request.RegisterRequest;
+import edu.exam_online.exam_online_system.dto.request.VerifyRegisterRequest;
+import edu.exam_online.exam_online_system.dto.response.AuthResponse;
+import edu.exam_online.exam_online_system.dto.request.LoginRequest;
+import edu.exam_online.exam_online_system.dto.response.RegisterResponse;
+import edu.exam_online.exam_online_system.entity.Code;
+import edu.exam_online.exam_online_system.entity.Role;
+import edu.exam_online.exam_online_system.entity.Token;
+import edu.exam_online.exam_online_system.entity.User;
+import edu.exam_online.exam_online_system.entity.UserRole;
+import edu.exam_online.exam_online_system.exception.AppException;
+import edu.exam_online.exam_online_system.exception.ErrorCode;
+import edu.exam_online.exam_online_system.mapper.AuthMapper;
+import edu.exam_online.exam_online_system.repository.CodeRepository;
+import edu.exam_online.exam_online_system.repository.RoleRepository;
+import edu.exam_online.exam_online_system.repository.UserRepository;
+import edu.exam_online.exam_online_system.repository.UserRoleRepository;
+import edu.exam_online.exam_online_system.service.AuthService;
+import edu.exam_online.exam_online_system.service.EmailService;
+import edu.exam_online.exam_online_system.service.TokenService;
+import edu.exam_online.exam_online_system.utils.TokenUtils;
+import jakarta.transaction.Transactional;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Random;
+
+import static edu.exam_online.exam_online_system.commons.constant.TimeConstant.JWT_EXPIRATION_MS;
+import static edu.exam_online.exam_online_system.commons.constant.TimeConstant.REFRESH_TOKEN_EXPIRATION_MS;
+
+@Service
+@FieldDefaults(level = AccessLevel.PRIVATE,  makeFinal = true)
+@RequiredArgsConstructor
+@Slf4j
+public class AuthServiceImpl implements AuthService {
+
+    UserRepository userRepository;
+    PasswordEncoder passwordEncoder;
+    TokenUtils tokenUtils;
+    TokenService tokenService;
+    EmailService emailService;
+
+    RoleRepository roleRepository;
+    CodeRepository codeRepository;
+    UserRoleRepository userRoleRepository;
+
+    AuthMapper authMapper;
+
+    @Override
+    @Transactional
+    public AuthResponse login(LoginRequest request) {
+        log.info("login request: {}", request);
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        validateLogin(request, user);
+
+        Token token = tokenService.saveToken(user);
+
+        log.info("login success: {}", user.getUsername());
+        return authMapper.toAuthResponse(token, user);
+    }
+
+    @Override
+    public AuthResponse refresh(String refreshToken) {
+        Token tokenEntity = tokenService.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new AppException(ErrorCode.REFRESH_TOKEN_INVALID));
+
+        User user = tokenEntity.getUser();
+
+        try {
+            String newAccessToken = tokenUtils.generateToken(user);
+            String newRefreshToken = tokenUtils.generateRefreshToken();
+
+            tokenService.revokeToken(tokenEntity.getToken());
+
+            tokenService.saveToken(newAccessToken, newRefreshToken, user,
+                    JWT_EXPIRATION_MS, REFRESH_TOKEN_EXPIRATION_MS);
+
+            return AuthResponse.builder()
+                    .token(newAccessToken)
+                    .refreshToken(newRefreshToken)
+                    .build();
+        } catch (Exception e) {
+            log.error("Refresh failed", e);
+            throw new AppException(ErrorCode.REFRESH_TOKEN_FAILSE);
+        }
+    }
+
+    @Override
+    public void logout() {
+        String accessToken = ((JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication())
+                .getToken()
+                .getTokenValue();
+
+        tokenService.revokeToken(accessToken);
+    }
+
+    @Override
+    @Transactional
+    public RegisterResponse register(RegisterRequest request) {
+        log.info("register request: {}", request);
+        if (userRepository.existsByEmail(request.getEmail())) {
+            log.error("email existed: {}", request.getEmail());
+            throw new AppException(ErrorCode.USER_EXISTED);
+        }
+
+        Role role = roleRepository.findById(request.getRoleId())
+                .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+
+        User user = User.builder()
+                .email(request.getEmail())
+                .username(request.getEmail().split("@")[0])
+                .password(passwordEncoder.encode(request.getPassword()))
+                .isActive(true)
+                .isEmailVerified(false)
+                .createdAt(LocalDateTime.now())
+                .build();
+        userRepository.save(user);
+
+        String code = String.format("%06d", new Random().nextInt(999999));
+        Code verificationCode = Code.builder()
+                .code(code)
+                .codeType(CodeTypeEnum.REGISTER_CODE)
+                .expiresAt(LocalDateTime.now().plusMinutes(10))
+                .user(user)
+                .build();
+        codeRepository.save(verificationCode);
+
+        UserRole userRole = UserRole.builder()
+                .role(role)
+                .user(user)
+                .build();
+        userRoleRepository.save(userRole);
+
+        emailService.sendVerificationEmail(user.getEmail(), code);
+
+        log.info("email sent: {}", user.getEmail());
+        return authMapper.toRegisterResponse(user.getId());
+    }
+
+    @Override
+    @Transactional
+    public boolean verifyEmail(VerifyRegisterRequest request){
+        log.info("verifyEmail userId: {}", request.getUserId());
+        Code verificationCode = codeRepository
+                .findByCodeAndUserId(request.getCode(), request.getUserId())
+                .orElseThrow(() -> new AppException(ErrorCode.WRONG_VERIFICATION_CODE));
+
+        validateVerifyEmail(request, verificationCode);
+
+        verificationCode.setIsUsed(true);
+
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        user.setIsEmailVerified(true);
+
+        userRepository.save(user);
+        codeRepository.save(verificationCode);
+        return true;
+    }
+
+    private void validateVerifyEmail(VerifyRegisterRequest request, Code verificationCode)  {
+        if (verificationCode.getExpiresAt().isBefore(LocalDateTime.now())) {
+            log.error("Verification code expired");
+            throw new AppException(ErrorCode.VERIFICATION_CODE_EXPIRED);
+        }
+
+        if(!request.getCode().equals(verificationCode.getCode())){
+            throw new AppException(ErrorCode.WRONG_VERIFICATION_CODE);
+        }
+    }
+
+    private void validateLogin(LoginRequest request, User user) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new AppException(ErrorCode.WRONG_PASSWORD_OR_USERID);
+        }
+
+        if(user.getIsEmailVerified() == false){
+            throw new AppException(ErrorCode.ACCOUNT_IS_INACTIVE);
+        }
+    }
+}
