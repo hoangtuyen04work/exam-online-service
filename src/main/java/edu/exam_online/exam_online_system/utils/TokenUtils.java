@@ -59,7 +59,7 @@ public class TokenUtils {
         Date expiry = new Date(now.getTime() + JWT_EXPIRATION_MS);
 
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getUsername())
+                .subject(user.getEmail())
                 .issueTime(now)
                 .expirationTime(expiry)
                 .claim("roles", extractRoles(user))

@@ -2,6 +2,7 @@ package edu.exam_online.exam_online_system.controller;
 
 import com.nimbusds.jose.JOSEException;
 import edu.exam_online.exam_online_system.commons.BaseResponse;
+import edu.exam_online.exam_online_system.dto.request.ChangePasswordRequest;
 import edu.exam_online.exam_online_system.dto.request.LoginRequest;
 import edu.exam_online.exam_online_system.dto.request.RegisterRequest;
 import edu.exam_online.exam_online_system.dto.request.VerifyRegisterRequest;
@@ -10,10 +11,12 @@ import edu.exam_online.exam_online_system.dto.response.RegisterResponse;
 import edu.exam_online.exam_online_system.exception.AppException;
 import edu.exam_online.exam_online_system.service.AuthService;
 import jakarta.validation.Valid;
+import liquibase.change.Change;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +35,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public BaseResponse<RegisterResponse> register(@RequestBody @Valid RegisterRequest request) throws AppException {
+    public BaseResponse<RegisterResponse> register(@RequestBody @Valid RegisterRequest request) {
         return BaseResponse.success(authService.register(request));
     }
 
@@ -43,7 +46,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public BaseResponse<AuthResponse> login(@RequestBody @Valid LoginRequest request) throws AppException, JOSEException {
+    public BaseResponse<AuthResponse> login(@RequestBody @Valid LoginRequest request){
         return BaseResponse.success(authService.login(request));
     }
 
@@ -52,4 +55,9 @@ public class AuthController {
         return BaseResponse.success(authService.refresh(refreshToken));
     }
 
+    @PutMapping("/change-password")
+    public BaseResponse<Void> changePassword(@RequestBody @Valid ChangePasswordRequest request){
+        authService.changePassword(request);
+        return BaseResponse.success();
+    }
 }

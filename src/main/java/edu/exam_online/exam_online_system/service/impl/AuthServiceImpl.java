@@ -1,8 +1,8 @@
 package edu.exam_online.exam_online_system.service.impl;
 
 
-import com.nimbusds.jose.JOSEException;
 import edu.exam_online.exam_online_system.commons.constant.CodeTypeEnum;
+import edu.exam_online.exam_online_system.dto.request.ChangePasswordRequest;
 import edu.exam_online.exam_online_system.dto.request.RegisterRequest;
 import edu.exam_online.exam_online_system.dto.request.VerifyRegisterRequest;
 import edu.exam_online.exam_online_system.dto.response.AuthResponse;
@@ -29,8 +29,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -60,6 +58,24 @@ public class AuthServiceImpl implements AuthService {
     UserRoleRepository userRoleRepository;
 
     AuthMapper authMapper;
+
+    @Override
+    @Transactional
+    public void changePassword(ChangePasswordRequest request){
+        log.info("changePassword request: {}", request);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        if(!passwordEncoder.matches(request.getOldPassword(), user.getPassword())){
+            throw new AppException(ErrorCode.CHANGE_PASSWORD_FAILED);
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+        log.info("changePassword success: {}", user.getUsername());
+    }
 
     @Override
     @Transactional
