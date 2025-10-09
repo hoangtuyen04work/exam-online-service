@@ -20,6 +20,7 @@ public enum ErrorCode{
     VERIFICATION_CODE_EXPIRED(400, "Verification code expired", HttpStatus.BAD_REQUEST),
     ACCOUNT_IS_INACTIVE(400, "Account is inactive", HttpStatus.BAD_REQUEST),
     ACCOUNT_IS_LOCKED(400, "Account is locked", HttpStatus.BAD_REQUEST),
+    CHANGE_PASSWORD_FAILED(400, "Change password failed", HttpStatus.BAD_REQUEST),
 
     // ===== ROLE =====
     ROLE_NOT_FOUND(404, "Role not found", HttpStatus.NOT_FOUND),
