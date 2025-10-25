@@ -2,6 +2,7 @@ package edu.exam_online.exam_online_system.service;
 
 import com.nimbusds.jose.JOSEException;
 import edu.exam_online.exam_online_system.dto.request.ChangePasswordRequest;
+import edu.exam_online.exam_online_system.dto.request.RefreshTokenRequest;
 import edu.exam_online.exam_online_system.dto.request.RegisterRequest;
 import edu.exam_online.exam_online_system.dto.request.VerifyRegisterRequest;
 import edu.exam_online.exam_online_system.dto.response.AuthResponse;
@@ -14,7 +15,7 @@ public interface AuthService {
 
     AuthResponse login(LoginRequest request);
 
-    AuthResponse refresh(String refreshToken);
+    AuthResponse refresh(RefreshTokenRequest request);
 
     void logout();
 

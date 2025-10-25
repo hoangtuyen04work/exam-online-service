@@ -11,7 +11,7 @@ import java.util.Set;
 
 @EntityListeners(AuditListener.class)
 @Entity
-@Table(name = "`user`")
+@Table(name = "user")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,6 +28,9 @@ public class User {
 
     @Column(unique = true, length = 100)
     private String email;
+
+    @Column
+    private String userCode;//username_roleName
 
     @Column(length = 255)
     private String password;
@@ -49,16 +52,15 @@ public class User {
     @Builder.Default
     private Boolean isEmailVerified = false;
 
-    private LocalDateTime lastLogin;
-
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<UserRole> userRoles;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Token> tokens;
