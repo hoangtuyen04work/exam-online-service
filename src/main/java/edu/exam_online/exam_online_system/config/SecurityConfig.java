@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -42,12 +41,12 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/swagger-resources/**",
                                 "/webjars/**",
-                                "/exam-online-system/api/auth/",
-                                "/exam-online-system/api/auth/login",
-                                "/exam-online-system/api/auth/refresh-token",
-                                "/exam-online-system/api/auth/verify-email",
-                                "/exam-online-system/api/auth/register",
-                                "/exam-online-system/api/auth/logout"
+                                "/api/auth/",
+                                "/api/auth/login",
+                                "api/auth/refresh-token",
+                                "/api/auth/verify-email",
+                                "/api/auth/register",
+                                "/api/roles"
                         ).permitAll()
 
                         .requestMatchers("/public/**").permitAll()
@@ -56,7 +55,6 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint) // ✅ thêm dòng này
                 )
-                // Bắt buộc tất cả request còn lại phải có JWT
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwtConfigurer -> jwtConfigurer
                                 .decoder(customJwtDecoder)

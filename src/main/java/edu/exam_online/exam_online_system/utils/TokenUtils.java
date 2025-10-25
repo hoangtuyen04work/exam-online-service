@@ -5,7 +5,6 @@ import com.nimbusds.jose.crypto.*;
 import com.nimbusds.jwt.*;
 import edu.exam_online.exam_online_system.entity.Role;
 import edu.exam_online.exam_online_system.entity.User;
-import edu.exam_online.exam_online_system.entity.UserRole;
 import edu.exam_online.exam_online_system.exception.AppException;
 import edu.exam_online.exam_online_system.exception.ErrorCode;
 import edu.exam_online.exam_online_system.repository.TokenRepository;
@@ -18,7 +17,6 @@ import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import static edu.exam_online.exam_online_system.commons.constant.TimeConstant.JWT_EXPIRATION_MS;
@@ -146,8 +144,8 @@ public class TokenUtils {
     }
 
     public List<String> extractRoles(User user) {
-        Set<UserRole> userRoles = user.getUserRoles();
-        return userRoles.stream().map(UserRole::getRole).map(Role::getName).toList();
+        Role role = user.getRole();
+        return List.of(role.getName());
     }
 
 }

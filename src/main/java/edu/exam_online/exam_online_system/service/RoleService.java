@@ -1,5 +1,6 @@
 package edu.exam_online.exam_online_system.service;
 
+import edu.exam_online.exam_online_system.dto.response.RoleResponse;
 import edu.exam_online.exam_online_system.entity.Role;
 
 import java.util.List;
@@ -9,5 +10,5 @@ public interface RoleService {
     Role updateRole(Long id, Role role);
     void deleteRole(Long id);
     Role getRoleById(Long id);
-    List<Role> getAllRoles();
+    List<RoleResponse> getAllRoles();
 }

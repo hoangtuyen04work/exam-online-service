@@ -10,12 +10,13 @@ import java.util.Set;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class AuthResponse {
 
     private String token;
     private String refreshToken;
+    @Builder.Default
     private String type = "Bearer";
     private String username;
     private String email;

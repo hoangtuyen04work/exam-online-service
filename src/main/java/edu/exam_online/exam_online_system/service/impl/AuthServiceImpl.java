@@ -1,8 +1,7 @@
 package edu.exam_online.exam_online_system.service.impl;
 
-
-import edu.exam_online.exam_online_system.commons.constant.CodeTypeEnum;
 import edu.exam_online.exam_online_system.dto.request.ChangePasswordRequest;
+import edu.exam_online.exam_online_system.dto.request.RefreshTokenRequest;
 import edu.exam_online.exam_online_system.dto.request.RegisterRequest;
 import edu.exam_online.exam_online_system.dto.request.VerifyRegisterRequest;
 import edu.exam_online.exam_online_system.dto.response.AuthResponse;
@@ -12,14 +11,14 @@ import edu.exam_online.exam_online_system.entity.Code;
 import edu.exam_online.exam_online_system.entity.Role;
 import edu.exam_online.exam_online_system.entity.Token;
 import edu.exam_online.exam_online_system.entity.User;
-import edu.exam_online.exam_online_system.entity.UserRole;
 import edu.exam_online.exam_online_system.exception.AppException;
 import edu.exam_online.exam_online_system.exception.ErrorCode;
 import edu.exam_online.exam_online_system.mapper.AuthMapper;
+import edu.exam_online.exam_online_system.mapper.CodeMapper;
+import edu.exam_online.exam_online_system.mapper.UserMapper;
 import edu.exam_online.exam_online_system.repository.CodeRepository;
 import edu.exam_online.exam_online_system.repository.RoleRepository;
 import edu.exam_online.exam_online_system.repository.UserRepository;
-import edu.exam_online.exam_online_system.repository.UserRoleRepository;
 import edu.exam_online.exam_online_system.service.AuthService;
 import edu.exam_online.exam_online_system.service.EmailService;
 import edu.exam_online.exam_online_system.service.TokenService;
@@ -55,9 +54,10 @@ public class AuthServiceImpl implements AuthService {
 
     RoleRepository roleRepository;
     CodeRepository codeRepository;
-    UserRoleRepository userRoleRepository;
 
     AuthMapper authMapper;
+    UserMapper userMapper;
+    CodeMapper codeMapper;
 
     @Override
     @Transactional
@@ -65,6 +65,7 @@ public class AuthServiceImpl implements AuthService {
         log.info("changePassword request: {}", request);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
+
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
@@ -81,7 +82,7 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public AuthResponse login(LoginRequest request) {
         log.info("login request: {}", request);
-        User user = userRepository.findByEmail(request.getEmail())
+        User user = userRepository.findByEmailAndRoleId(request.getEmail(), request.getRoleId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         validateLogin(request, user);
@@ -93,8 +94,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse refresh(String refreshToken) {
-        Token tokenEntity = tokenService.findByRefreshToken(refreshToken)
+    public AuthResponse refresh(RefreshTokenRequest request) {
+        Token tokenEntity = tokenService.findByRefreshToken(request.getRefreshToken())
                 .orElseThrow(() -> new AppException(ErrorCode.REFRESH_TOKEN_INVALID));
 
         User user = tokenEntity.getUser();
@@ -104,14 +105,10 @@ public class AuthServiceImpl implements AuthService {
             String newRefreshToken = tokenUtils.generateRefreshToken();
 
             tokenService.revokeToken(tokenEntity.getToken());
-
             tokenService.saveToken(newAccessToken, newRefreshToken, user,
                     JWT_EXPIRATION_MS, REFRESH_TOKEN_EXPIRATION_MS);
 
-            return AuthResponse.builder()
-                    .token(newAccessToken)
-                    .refreshToken(newRefreshToken)
-                    .build();
+            return authMapper.toAuthResponse(newAccessToken, newRefreshToken);
         } catch (Exception e) {
             log.error("Refresh failed", e);
             throw new AppException(ErrorCode.REFRESH_TOKEN_FAILSE);
@@ -139,30 +136,15 @@ public class AuthServiceImpl implements AuthService {
         Role role = roleRepository.findById(request.getRoleId())
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
 
-        User user = User.builder()
-                .email(request.getEmail())
-                .username(request.getEmail().split("@")[0])
-                .password(passwordEncoder.encode(request.getPassword()))
-                .isActive(true)
-                .isEmailVerified(false)
-                .createdAt(LocalDateTime.now())
-                .build();
+        String username = getUsername(request.getEmail());
+        String userCode = getUserCode(request.getEmail(), role);
+
+        User user = userMapper.toEntity(request, username, passwordEncoder.encode(request.getPassword()), role, userCode);
         userRepository.save(user);
 
-        String code = String.format("%06d", new Random().nextInt(999999));
-        Code verificationCode = Code.builder()
-                .code(code)
-                .codeType(CodeTypeEnum.REGISTER_CODE)
-                .expiresAt(LocalDateTime.now().plusMinutes(10))
-                .user(user)
-                .build();
+        String code = buildCode();
+        Code verificationCode = codeMapper.toVerificationCode(code, user);
         codeRepository.save(verificationCode);
-
-        UserRole userRole = UserRole.builder()
-                .role(role)
-                .user(user)
-                .build();
-        userRoleRepository.save(userRole);
 
         emailService.sendVerificationEmail(user.getEmail(), code);
 
@@ -210,5 +192,17 @@ public class AuthServiceImpl implements AuthService {
         if(user.getIsEmailVerified() == false){
             throw new AppException(ErrorCode.ACCOUNT_IS_INACTIVE);
         }
+    }
+
+    private String buildCode(){
+        return String.format("%06d", new Random().nextInt(999999));
+    }
+
+    private String getUsername(String email){
+        return email.split("@")[0];
+    }
+
+    private String getUserCode(String email, Role role){
+        return email + role.getName();
     }
 }

@@ -4,6 +4,7 @@ import com.nimbusds.jose.JOSEException;
 import edu.exam_online.exam_online_system.commons.BaseResponse;
 import edu.exam_online.exam_online_system.dto.request.ChangePasswordRequest;
 import edu.exam_online.exam_online_system.dto.request.LoginRequest;
+import edu.exam_online.exam_online_system.dto.request.RefreshTokenRequest;
 import edu.exam_online.exam_online_system.dto.request.RegisterRequest;
 import edu.exam_online.exam_online_system.dto.request.VerifyRegisterRequest;
 import edu.exam_online.exam_online_system.dto.response.AuthResponse;
@@ -51,8 +52,8 @@ public class AuthController {
     }
 
     @PostMapping("/refresh-token")
-    public BaseResponse<AuthResponse> refreshToken(@RequestBody @Valid String refreshToken) {
-        return BaseResponse.success(authService.refresh(refreshToken));
+    public BaseResponse<AuthResponse> refreshToken(@RequestBody @Valid RefreshTokenRequest request) {
+        return BaseResponse.success(authService.refresh(request));
     }
 
     @PutMapping("/change-password")

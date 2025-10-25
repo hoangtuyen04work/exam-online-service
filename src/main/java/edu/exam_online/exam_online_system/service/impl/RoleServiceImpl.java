@@ -1,6 +1,8 @@
 package edu.exam_online.exam_online_system.service.impl;
 
+import edu.exam_online.exam_online_system.dto.response.RoleResponse;
 import edu.exam_online.exam_online_system.entity.Role;
+import edu.exam_online.exam_online_system.mapper.RoleMapper;
 import edu.exam_online.exam_online_system.repository.RoleRepository;
 import edu.exam_online.exam_online_system.service.RoleService;
 import lombok.AccessLevel;
@@ -16,6 +18,8 @@ import java.util.List;
 public class RoleServiceImpl implements RoleService {
 
     RoleRepository roleRepository;
+
+    RoleMapper roleMapper;
 
 
     @Override
@@ -42,7 +46,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<Role> getAllRoles() {
-        return roleRepository.findAll();
+    public List<RoleResponse> getAllRoles() {
+        List<Role> roles =  roleRepository.findAll();
+        return roles.stream().map(roleMapper::toResponse).toList();
     }
 }

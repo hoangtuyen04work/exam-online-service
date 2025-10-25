@@ -22,7 +22,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
-        // Kiểm tra username/email đã tồn tại chưa
         userRepository.findByUsername(user.getUsername())
                 .ifPresent(u -> {
                     throw new IllegalStateException("Username already exists");
