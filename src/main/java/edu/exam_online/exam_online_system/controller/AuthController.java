@@ -1,18 +1,16 @@
 package edu.exam_online.exam_online_system.controller;
 
-import com.nimbusds.jose.JOSEException;
 import edu.exam_online.exam_online_system.commons.BaseResponse;
-import edu.exam_online.exam_online_system.dto.request.ChangePasswordRequest;
-import edu.exam_online.exam_online_system.dto.request.LoginRequest;
-import edu.exam_online.exam_online_system.dto.request.RefreshTokenRequest;
-import edu.exam_online.exam_online_system.dto.request.RegisterRequest;
-import edu.exam_online.exam_online_system.dto.request.VerifyRegisterRequest;
-import edu.exam_online.exam_online_system.dto.response.AuthResponse;
-import edu.exam_online.exam_online_system.dto.response.RegisterResponse;
+import edu.exam_online.exam_online_system.dto.request.auth.ChangePasswordRequest;
+import edu.exam_online.exam_online_system.dto.request.auth.LoginRequest;
+import edu.exam_online.exam_online_system.dto.request.auth.RefreshTokenRequest;
+import edu.exam_online.exam_online_system.dto.request.auth.RegisterRequest;
+import edu.exam_online.exam_online_system.dto.request.auth.VerifyRegisterRequest;
+import edu.exam_online.exam_online_system.dto.response.auth.AuthResponse;
+import edu.exam_online.exam_online_system.dto.response.auth.RegisterResponse;
 import edu.exam_online.exam_online_system.exception.AppException;
-import edu.exam_online.exam_online_system.service.AuthService;
+import edu.exam_online.exam_online_system.service.auth.AuthService;
 import jakarta.validation.Valid;
-import liquibase.change.Change;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

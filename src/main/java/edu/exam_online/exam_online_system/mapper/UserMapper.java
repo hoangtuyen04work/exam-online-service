@@ -1,8 +1,8 @@
 package edu.exam_online.exam_online_system.mapper;
 
-import edu.exam_online.exam_online_system.dto.request.RegisterRequest;
-import edu.exam_online.exam_online_system.entity.Role;
-import edu.exam_online.exam_online_system.entity.User;
+import edu.exam_online.exam_online_system.dto.request.auth.RegisterRequest;
+import edu.exam_online.exam_online_system.entity.auth.Role;
+import edu.exam_online.exam_online_system.entity.auth.User;
 import org.mapstruct.Mapper;
 
 import java.time.LocalDateTime;

@@ -1,8 +1,8 @@
 package edu.exam_online.exam_online_system.mapper;
 
 import edu.exam_online.exam_online_system.commons.constant.CodeTypeEnum;
-import edu.exam_online.exam_online_system.entity.Code;
-import edu.exam_online.exam_online_system.entity.User;
+import edu.exam_online.exam_online_system.entity.auth.Code;
+import edu.exam_online.exam_online_system.entity.auth.User;
 import org.mapstruct.Mapper;
 
 import java.time.LocalDateTime;

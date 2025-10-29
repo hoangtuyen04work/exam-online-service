@@ -1,9 +1,9 @@
 package edu.exam_online.exam_online_system.mapper;
 
-import edu.exam_online.exam_online_system.dto.response.AuthResponse;
-import edu.exam_online.exam_online_system.dto.response.RegisterResponse;
-import edu.exam_online.exam_online_system.entity.Token;
-import edu.exam_online.exam_online_system.entity.User;
+import edu.exam_online.exam_online_system.dto.response.auth.AuthResponse;
+import edu.exam_online.exam_online_system.dto.response.auth.RegisterResponse;
+import edu.exam_online.exam_online_system.entity.auth.Token;
+import edu.exam_online.exam_online_system.entity.auth.User;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

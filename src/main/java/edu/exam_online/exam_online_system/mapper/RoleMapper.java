@@ -1,7 +1,7 @@
 package edu.exam_online.exam_online_system.mapper;
 
-import edu.exam_online.exam_online_system.dto.response.RoleResponse;
-import edu.exam_online.exam_online_system.entity.Role;
+import edu.exam_online.exam_online_system.dto.response.auth.RoleResponse;
+import edu.exam_online.exam_online_system.entity.auth.Role;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

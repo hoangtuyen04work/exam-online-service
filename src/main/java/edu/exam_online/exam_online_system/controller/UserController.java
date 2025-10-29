@@ -1,12 +1,10 @@
 package edu.exam_online.exam_online_system.controller;
 
 import edu.exam_online.exam_online_system.commons.BaseResponse;
-import edu.exam_online.exam_online_system.entity.User;
-import edu.exam_online.exam_online_system.service.UserService;
+import edu.exam_online.exam_online_system.entity.auth.User;
+import edu.exam_online.exam_online_system.service.auth.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
