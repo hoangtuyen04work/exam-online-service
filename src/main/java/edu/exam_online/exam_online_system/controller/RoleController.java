@@ -1,8 +1,8 @@
 package edu.exam_online.exam_online_system.controller;
 
 import edu.exam_online.exam_online_system.commons.BaseResponse;
-import edu.exam_online.exam_online_system.dto.response.RoleResponse;
-import edu.exam_online.exam_online_system.service.RoleService;
+import edu.exam_online.exam_online_system.dto.response.auth.RoleResponse;
+import edu.exam_online.exam_online_system.service.auth.RoleService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

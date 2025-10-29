@@ -3,11 +3,11 @@ package edu.exam_online.exam_online_system.utils;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.*;
 import com.nimbusds.jwt.*;
-import edu.exam_online.exam_online_system.entity.Role;
-import edu.exam_online.exam_online_system.entity.User;
+import edu.exam_online.exam_online_system.entity.auth.Role;
+import edu.exam_online.exam_online_system.entity.auth.User;
 import edu.exam_online.exam_online_system.exception.AppException;
 import edu.exam_online.exam_online_system.exception.ErrorCode;
-import edu.exam_online.exam_online_system.repository.TokenRepository;
+import edu.exam_online.exam_online_system.repository.auth.TokenRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -57,7 +57,7 @@ public class TokenUtils {
         Date expiry = new Date(now.getTime() + JWT_EXPIRATION_MS);
 
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getEmail())
+                .subject(user.getId().toString())
                 .issueTime(now)
                 .expirationTime(expiry)
                 .claim("roles", extractRoles(user))
@@ -101,7 +101,7 @@ public class TokenUtils {
             }
 
             Date expiration = signedJWT.getJWTClaimsSet().getExpirationTime();
-            String username = signedJWT.getJWTClaimsSet().getSubject();
+            String userId = signedJWT.getJWTClaimsSet().getSubject();
 
             return expiration != null
                     && expiration.after(new Date());

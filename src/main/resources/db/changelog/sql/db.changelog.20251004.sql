@@ -38,7 +38,7 @@ INSERT INTO permission (name, description, resource, action) VALUES
 
 CREATE TABLE user (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50)  UNIQUE,
+    username VARCHAR(50) ,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     first_name VARCHAR(50) ,

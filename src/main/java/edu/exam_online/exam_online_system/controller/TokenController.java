@@ -1,6 +1,6 @@
 //package edu.exam_online.exam_online_system.controller;
 //
-//import edu.exam_online.exam_online_system.service.TokenService;
+//import edu.exam_online.exam_online_system.service.auth.TokenService;
 //import io.swagger.v3.oas.annotations.Operation;
 //import org.springframework.web.bind.annotation.*;
 //

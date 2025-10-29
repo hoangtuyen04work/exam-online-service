@@ -1,0 +1,66 @@
+server:
+  address: 0.0.0.0
+  port: 8888
+  servlet:
+    context-path: /exam-online-system
+
+spring:
+  application:
+    name: exam-online-system
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: hoanghuutuyen06022004@gmail.com
+    password: "ctrw zreb qvdy vccx"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+    default-encoding: UTF-8
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/exam_online_system?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: 123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          azure:
+            client-id: 5e8fd1e6-5c31-4b10-873a-c0cbb2565f02
+            client-secret: t3y8Q~RqbY.QtUlSYVdMz53x6GVHVOU3l5Gq1bXV
+            scope:
+              - openid
+              - profile
+              - email
+              - User.Read
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
+        provider:
+          azure:
+            issuer-uri: https://login.microsoftonline.com/0aa16d8a-a396-4e21-aa14-2a68a45786bc/v2.0
+
+jwt:
+  secret: 18x30Q0l4Sdr783UnbNl6drrmqSobLJB
+  expiration: 86400000
+
+logging:
+  level:
+    com.azure.spring: DEBUG
+    org.springframework.security: DEBUG
+    edu.exam_online.exam_online_system: DEBUG

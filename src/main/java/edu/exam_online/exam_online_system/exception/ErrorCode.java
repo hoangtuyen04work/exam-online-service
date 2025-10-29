@@ -12,7 +12,7 @@ public enum ErrorCode{
     REFRESH_TOKEN_FAILSE(400, "Refresh token failed", HttpStatus.BAD_REQUEST),
     REFRESH_TOKEN_INVALID(400, "Refresh token invalid", HttpStatus.BAD_REQUEST),
     USER_EXISTED(400, "User already exists", HttpStatus.BAD_REQUEST),
-    USER_NOT_EXISTED(404, "User not found", HttpStatus.NOT_FOUND),
+    USER_NOT_EXISTED(400, "User not found", HttpStatus.NOT_FOUND),
     WRONG_PASSWORD_OR_USERID(400, "Wrong password or user ID", HttpStatus.BAD_REQUEST),
     NOT_AUTHENTICATION(401, "Not authenticated", HttpStatus.UNAUTHORIZED),
     NOT_AUTHORIZATION(403, "Access denied", HttpStatus.FORBIDDEN),
@@ -69,7 +69,11 @@ public enum ErrorCode{
     // ===== GENERAL =====
     CONFLICT(409, "Conflict occurred", HttpStatus.CONFLICT),
     RESOURCE_ALREADY_EXISTS(409, "Resource already exists", HttpStatus.CONFLICT),
-    RESOURCE_NOT_FOUND(404, "Requested resource not found", HttpStatus.NOT_FOUND);
+    RESOURCE_NOT_FOUND(404, "Requested resource not found", HttpStatus.NOT_FOUND),
+
+    // ====== EXAM ========
+    EXAM_NOT_FOUND(400, "Exam not found", HttpStatus.BAD_REQUEST),
+    QUESTION_NOT_FOUND(400, "Question not found", HttpStatus.NOT_FOUND);
 
     @Getter
     int status;

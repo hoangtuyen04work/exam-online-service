@@ -1,7 +1,7 @@
 package edu.exam_online.exam_online_system.mapper;
 
-import edu.exam_online.exam_online_system.entity.Token;
-import edu.exam_online.exam_online_system.entity.User;
+import edu.exam_online.exam_online_system.entity.auth.Token;
+import edu.exam_online.exam_online_system.entity.auth.User;
 import org.mapstruct.Mapper;
 
 import java.time.Instant;
