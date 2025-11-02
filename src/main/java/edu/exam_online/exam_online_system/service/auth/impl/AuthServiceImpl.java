@@ -111,7 +111,7 @@ public class AuthServiceImpl implements AuthService {
             return authMapper.toAuthResponse(newAccessToken, newRefreshToken);
         } catch (Exception e) {
             log.error("Refresh failed", e);
-            throw new AppException(ErrorCode.REFRESH_TOKEN_FAILSE);
+            throw new AppException(ErrorCode.REFRESH_TOKEN_FALSE);
         }
     }
 

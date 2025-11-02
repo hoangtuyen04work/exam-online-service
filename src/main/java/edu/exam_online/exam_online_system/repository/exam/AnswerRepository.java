@@ -13,4 +13,6 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     // Lấy tất cả đáp án thuộc một câu hỏi
     List<Answer> findByQuestion(Question question);
 
+    List<Answer> findByIdIn(List<Long> ids);
+
 }

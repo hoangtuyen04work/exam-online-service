@@ -26,7 +26,6 @@ public class CustomJwtAuthenticationConverter implements Converter<Jwt, Collecti
 
     @Override
     public Collection<GrantedAuthority> convert(Jwt jwt) {
-//        Collection<GrantedAuthority> authorities = defaultGrantedAuthoritiesConverter.convert(jwt);
         List<String> roles = jwt.getClaimAsStringList("roles");
         if (roles != null) {
             return roles.stream()

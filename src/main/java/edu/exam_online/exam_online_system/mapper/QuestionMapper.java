@@ -2,7 +2,7 @@ package edu.exam_online.exam_online_system.mapper;
 
 import edu.exam_online.exam_online_system.dto.request.exam.QuestionCreationRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.QuestionUpdateRequest;
-import edu.exam_online.exam_online_system.dto.response.exam.QuestionResponse;
+import edu.exam_online.exam_online_system.dto.response.exam.teacher.QuestionResponse;
 import edu.exam_online.exam_online_system.entity.exam.Answer;
 import edu.exam_online.exam_online_system.entity.exam.Question;
 import edu.exam_online.exam_online_system.entity.exam.QuestionExam;

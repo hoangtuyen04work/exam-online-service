@@ -1,11 +1,14 @@
 package edu.exam_online.exam_online_system.entity.exam;
 
-
+import edu.exam_online.exam_online_system.commons.constant.ExamStudentStatusEnum;
 import edu.exam_online.exam_online_system.entity.auth.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,26 +32,51 @@ import java.util.List;
 
 @EntityListeners(AuditingEntityListener.class)
 @Entity
-@Table(name = "exams")
+@Table(name = "exam_session_students")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Exam {
+public class ExamSessionStudent {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "exam_session_id", nullable = false)
+    private ExamSession examSession;
 
-    @Column(name = "description", columnDefinition = "TEXT")
-    private String description;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id", nullable = false)
+    private User student;
 
-    @ManyToOne
-    @JoinColumn(name = "teacher_id", nullable = false)
-    private User teacher;
+    @Builder.Default
+    @OneToMany(mappedBy = "examSessionStudent", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ExamSessionStudentAnswer> answers = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    @Column(name = "status", length = 32)
+    private ExamStudentStatusEnum status = ExamStudentStatusEnum.IN_PROGRESS; // , IN_PROGRESS, COMPLETED
+
+    @Column(name = "started_at")
+    @Builder.Default
+    private LocalDateTime startedAt = LocalDateTime.now();
+
+    @Column(name = "submitted_at")
+    private LocalDateTime submittedAt;
+
+    @Column(name = "expired_at")
+    private LocalDateTime expiredAt;
+
+    @Column(name = "exit_count")
+    @Builder.Default
+    private Integer exitCount = 0;
+
+    @Column(name = "total_score")
+    private Float totalScore;
 
     @CreatedBy
     @Column(name = "created_by", nullable = false)
@@ -61,8 +89,4 @@ public class Exam {
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
-
-    @Builder.Default
-    @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<QuestionExam> questionExams = new ArrayList<>();
 }

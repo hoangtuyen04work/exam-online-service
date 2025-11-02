@@ -18,11 +18,7 @@ CREATE TABLE exams
 (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    duration_minutes INT NOT NULL, -- minutes
     description TEXT,
-    total_point INT NOT NULL,
-    time_start TIMESTAMP NOT NULL,
-    time_end TIMESTAMP NOT NULL,
     teacher_id BIGINT NOT NULL,
     created_by BIGINT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

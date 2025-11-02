@@ -1,58 +1,60 @@
 package edu.exam_online.exam_online_system.entity.exam;
 
-
-import edu.exam_online.exam_online_system.entity.auth.User;
-import jakarta.persistence.CascadeType;
+import edu.exam_online.exam_online_system.commons.constant.ExamSessionStudentStateEnum;
+import edu.exam_online.exam_online_system.commons.constant.ExamStudentStatusEnum;
+import edu.exam_online.exam_online_system.commons.constant.ExamSubmitStateEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @EntityListeners(AuditingEntityListener.class)
 @Entity
-@Table(name = "exams")
+@Table(name = "exam_session_student_answers")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Exam {
+public class ExamSessionStudentAnswer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "state", length = 32)
+    private ExamSessionStudentStateEnum state;
 
-    @Column(name = "description", columnDefinition = "TEXT")
-    private String description;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "exam_session_student_id", nullable = false)
+    private ExamSessionStudent examSessionStudent;
 
-    @ManyToOne
-    @JoinColumn(name = "teacher_id", nullable = false)
-    private User teacher;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_id", nullable = false)
+    private Question question;
 
-    @CreatedBy
-    @Column(name = "created_by", nullable = false)
-    private Long createdBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "answer_id")
+    private Answer selectedAnswer;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
@@ -61,8 +63,4 @@ public class Exam {
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
-
-    @Builder.Default
-    @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<QuestionExam> questionExams = new ArrayList<>();
 }

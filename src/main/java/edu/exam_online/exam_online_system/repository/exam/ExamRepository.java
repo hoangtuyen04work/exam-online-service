@@ -23,4 +23,6 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
     Page<Exam> findByTeacherId(Long teacherId, Pageable pageable);
 
     Optional<Exam> findByIdAndTeacherId(Long id, Long teacherId);
+
+    void deleteByIdAndTeacherId(Long id, Long teacherId);
 }

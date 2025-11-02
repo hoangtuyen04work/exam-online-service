@@ -43,7 +43,7 @@ public class SecurityConfig {
                                 "/webjars/**",
                                 "/api/auth/",
                                 "/api/auth/login",
-                                "api/auth/refresh-token",
+                                "/api/auth/refresh-token",
                                 "/api/auth/verify-email",
                                 "/api/auth/register",
                                 "/api/roles"
@@ -52,9 +52,6 @@ public class SecurityConfig {
                         .requestMatchers("/public/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(jwtAuthenticationEntryPoint) // ✅ thêm dòng này
-                )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwtConfigurer -> jwtConfigurer
                                 .decoder(customJwtDecoder)
@@ -62,7 +59,9 @@ public class SecurityConfig {
                         )
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 )
-                // tắt formLogin và basic để ép buộc JWT
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint) // ✅ thêm dòng này
+                )
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable);
 

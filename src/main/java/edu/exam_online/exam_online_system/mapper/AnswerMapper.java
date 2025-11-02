@@ -2,7 +2,7 @@ package edu.exam_online.exam_online_system.mapper;
 
 import edu.exam_online.exam_online_system.dto.request.exam.AnswerCreationRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.AnswerUpdateRequest;
-import edu.exam_online.exam_online_system.dto.response.exam.AnswerResponse;
+import edu.exam_online.exam_online_system.dto.response.exam.teacher.AnswerResponse;
 import edu.exam_online.exam_online_system.entity.exam.Answer;
 import edu.exam_online.exam_online_system.entity.exam.Question;
 import org.mapstruct.AfterMapping;
@@ -10,8 +10,6 @@ import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface AnswerMapper {
