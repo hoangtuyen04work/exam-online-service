@@ -1,4 +1,4 @@
-package edu.exam_online.exam_online_system.dto.response.exam;
+package edu.exam_online.exam_online_system.dto.response.exam.teacher;
 
 import edu.exam_online.exam_online_system.commons.constant.Difficulty;
 import lombok.*;

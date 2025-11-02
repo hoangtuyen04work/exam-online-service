@@ -1,0 +1,19 @@
+package edu.exam_online.exam_online_system.dto.response.exam.student;
+
+import edu.exam_online.exam_online_system.commons.constant.ExamStudentStatusEnum;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+
+@Getter
+@Setter
+@Builder
+public class ExamSessionContentResponse {
+    @Builder.Default
+    private ExamStudentStatusEnum status = ExamStudentStatusEnum.IN_PROGRESS;
+    private Long examSessionId;
+    private String name;
+    private List<QuestionContentResponse> questions;
+}

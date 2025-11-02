@@ -18,22 +18,8 @@ public class ExamCreationRequest {
     @Size(max = 255, message = "Tên kỳ thi không được vượt quá 255 ký tự")
     private String name;
 
-    @NotNull(message = "Thời lượng không được để trống")
-    @Min(value = 1, message = "Thời lượng phải lớn hơn hoặc bằng 1 phút")
-    private Integer durationMinutes;
-
     @Size(max = 2000, message = "Mô tả không được vượt quá 2000 ký tự")
     private String description;
-
-    @NotNull(message = "Tổng điểm không được để trống")
-    @Min(value = 1, message = "Tổng điểm phải lớn hơn hoặc bằng 1")
-    private Integer totalPoint;
-
-    @NotNull(message = "Thời gian bắt đầu không được để trống")
-    private LocalDateTime timeStart;
-
-    @NotNull(message = "Thời gian kết thúc không được để trống")
-    private LocalDateTime timeEnd;
 
     @Valid
     private List<QuestionCreationRequest> questions;

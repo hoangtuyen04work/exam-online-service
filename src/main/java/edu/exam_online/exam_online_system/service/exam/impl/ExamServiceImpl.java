@@ -5,10 +5,10 @@ import edu.exam_online.exam_online_system.dto.request.exam.ExamCreationRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamUpdateQuestionsRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.QuestionCreationRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.QuestionUpdateRequest;
-import edu.exam_online.exam_online_system.dto.response.exam.ExamDetailResponse;
-import edu.exam_online.exam_online_system.dto.response.exam.ExamResponse;
+import edu.exam_online.exam_online_system.dto.response.exam.teacher.ExamDetailResponse;
+import edu.exam_online.exam_online_system.dto.response.exam.teacher.ExamResponse;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamUpdateRequest;
-import edu.exam_online.exam_online_system.dto.response.exam.QuestionResponse;
+import edu.exam_online.exam_online_system.dto.response.exam.teacher.QuestionResponse;
 import edu.exam_online.exam_online_system.entity.auth.User;
 import edu.exam_online.exam_online_system.entity.exam.Answer;
 import edu.exam_online.exam_online_system.entity.exam.Exam;
@@ -56,6 +56,13 @@ public class ExamServiceImpl implements ExamService {
     QuestionMapper questionMapper;
     AnswerMapper answerMapper;
     QuestionExamMapper questionExamMapper;
+
+    @Override
+    @Transactional
+    public void deleteById(Long examId){
+        Long userId = SecurityUtils.getUserId();
+        examRepository.deleteByIdAndTeacherId(examId, userId);
+    }
 
     @Override
     @Transactional
