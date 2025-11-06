@@ -2,6 +2,7 @@ package edu.exam_online.exam_online_system.service.exam.impl;
 
 import edu.exam_online.exam_online_system.dto.request.exam.ExamSessionCreationRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamSessionUpdateRequest;
+import edu.exam_online.exam_online_system.dto.request.param.ExamSessionSearchParam;
 import edu.exam_online.exam_online_system.dto.response.exam.teacher.ExamSessionResponse;
 import edu.exam_online.exam_online_system.entity.auth.User;
 import edu.exam_online.exam_online_system.entity.exam.Exam;
@@ -80,9 +81,9 @@ public class ExamSessionServiceImpl implements ExamSessionService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ExamSessionResponse> getAll(Pageable pageable) {
+    public Page<ExamSessionResponse> getAll(ExamSessionSearchParam param, Pageable pageable) {
         Long userId = SecurityUtils.getUserId();
-        Page<ExamSession> examSessions =  examSessionRepository.findAllByOwnerId(userId, pageable);
+        Page<ExamSession> examSessions =  examSessionRepository.findAllByOwnerId(param.getExamId(), userId, pageable);
         return examSessions.map(
                 examSession -> examSessionMapper.toResponse(examSession, generateInviteExamSession(examSession.getCode())));
     }

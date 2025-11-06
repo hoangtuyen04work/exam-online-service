@@ -71,14 +71,20 @@ public interface ExamSessionStudentMapper {
             return Collections.emptyList();
         }
 
-        Map<Question, List<ExamSessionStudentAnswer>> grouped = examSessionStudent.getAnswers()
+        Map<Long, List<ExamSessionStudentAnswer>> questionIdToAnswerIds = examSessionStudent.getAnswers()
                 .stream()
                 .filter(Objects::nonNull)
                 .filter(a -> a.getQuestion() != null)
-                .collect(Collectors.groupingBy(ExamSessionStudentAnswer::getQuestion));
+                .collect(Collectors.groupingBy(e -> e.getQuestion().getId()));
 
-        return grouped.entrySet().stream()
-                .map(entry -> mapQuestion(entry.getKey(), entry.getValue()))
+        Map<Long, Question> idToQuestion = examSessionStudent.getAnswers().stream()
+                .collect(Collectors.toMap(
+                        examSessionStudentAnswer -> examSessionStudentAnswer.getQuestion().getId(),   // key: ID của câu hỏi
+                        ExamSessionStudentAnswer::getQuestion                       // value: đối tượng Question
+                ));
+
+        return questionIdToAnswerIds.entrySet().stream()
+                .map(entry -> mapQuestion(idToQuestion.get(entry.getKey()), entry.getValue()))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }

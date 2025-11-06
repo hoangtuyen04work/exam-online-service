@@ -17,7 +17,15 @@ public interface ExamSessionRepository extends JpaRepository<ExamSession, Long> 
     @Query("SELECT e FROM ExamSession e WHERE e.code = :code")
     Optional<ExamSession> findByCode(@Param("code") String code);
 
-    Page<ExamSession> findAllByOwnerId(Long ownerId, Pageable pageable);
+    @Query("""
+        SELECT e FROM ExamSession e
+        WHERE e.owner.id = :ownerId
+        AND (:examId IS NULL OR e.exam.id = :examId)
+    """)
+    Page<ExamSession> findAllByOwnerId(
+            @Param("examId") Long examId,
+            @Param("ownerId") Long ownerId,
+            Pageable pageable);
 
     Optional<ExamSession> findByIdAndOwnerId(Long id, Long ownerId);
 }
