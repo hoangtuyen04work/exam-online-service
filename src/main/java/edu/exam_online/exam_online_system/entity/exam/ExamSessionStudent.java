@@ -68,6 +68,9 @@ public class ExamSessionStudent {
     @Column(name = "submitted_at")
     private LocalDateTime submittedAt;
 
+    @Column(name = "teacher_overall_feedback", columnDefinition = "TEXT")
+    private String teacherOverallFeedback;
+
     @Column(name = "expired_at")
     private LocalDateTime expiredAt;
 

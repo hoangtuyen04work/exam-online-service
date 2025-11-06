@@ -4,8 +4,12 @@ import edu.exam_online.exam_online_system.commons.BaseResponse;
 import edu.exam_online.exam_online_system.commons.PageResponse;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamSessionCreationRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamSessionUpdateRequest;
+import edu.exam_online.exam_online_system.dto.request.exam.TeacherOverallFeedBackRequest;
+import edu.exam_online.exam_online_system.dto.response.exam.student.result.ExamSessionStudentResultResponse;
 import edu.exam_online.exam_online_system.dto.response.exam.teacher.ExamSessionResponse;
+import edu.exam_online.exam_online_system.dto.response.exam.teacher.StudentJoinedExamSessionResponse;
 import edu.exam_online.exam_online_system.service.exam.ExamSessionService;
+import edu.exam_online.exam_online_system.service.exam.ExamSessionStudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ExamSessionController {
 
     ExamSessionService examSessionService;
+    ExamSessionStudentService  examSessionStudentService;
 
     @PostMapping
     @Operation(summary ="Create new exam session")
@@ -61,4 +66,23 @@ public class ExamSessionController {
         return BaseResponse.success(examSessionService.getDetail(examSessionId));
     }
 
+    @GetMapping("/{examSessionId}")
+    @Operation(summary = "Get list user of exam session")
+    public PageResponse<StudentJoinedExamSessionResponse> getStudentJoinedExamSession(@PathVariable Long examSessionId, @ParameterObject Pageable pageable){
+        return PageResponse.success(examSessionStudentService.getStudentJoinedExamSession(examSessionId, pageable));
+    }
+
+    @GetMapping("/result/{examSessionStudentId}")
+    @Operation(summary = "Get result of exam of a student")
+    public BaseResponse<ExamSessionStudentResultResponse> getExamSessionResultById(@PathVariable Long examSessionStudentId) {
+        return BaseResponse.success(examSessionStudentService.getExamSessionResultByExamSessionStudentId(examSessionStudentId));
+    }
+
+
+    @PostMapping("/{examSessionStudentId}")
+    @Operation(summary = "Teacher create feed back for student")
+    public BaseResponse<Void> createFeedBack(@PathVariable Long examSessionStudentId, @RequestBody TeacherOverallFeedBackRequest request){
+        examSessionStudentService.teacherFeedBack(examSessionStudentId, request);
+        return BaseResponse.success();
+    }
 }

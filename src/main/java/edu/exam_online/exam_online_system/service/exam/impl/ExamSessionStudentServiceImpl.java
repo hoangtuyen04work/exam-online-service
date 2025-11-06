@@ -5,8 +5,12 @@ import edu.exam_online.exam_online_system.dto.request.exam.ExamSessionStudentSav
 import edu.exam_online.exam_online_system.dto.request.exam.ExitEventRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.JoinExamRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.QuestionSaveRequest;
+import edu.exam_online.exam_online_system.dto.request.exam.TeacherOverallFeedBackRequest;
 import edu.exam_online.exam_online_system.dto.response.exam.student.ExamSessionContentResponse;
+import edu.exam_online.exam_online_system.dto.response.exam.student.ExamSessionStudentResponse;
 import edu.exam_online.exam_online_system.dto.response.exam.student.JoinExamSessionResponse;
+import edu.exam_online.exam_online_system.dto.response.exam.student.result.ExamSessionStudentResultResponse;
+import edu.exam_online.exam_online_system.dto.response.exam.teacher.StudentJoinedExamSessionResponse;
 import edu.exam_online.exam_online_system.entity.auth.User;
 import edu.exam_online.exam_online_system.entity.exam.Answer;
 import edu.exam_online.exam_online_system.entity.exam.ExamSession;
@@ -25,12 +29,14 @@ import edu.exam_online.exam_online_system.repository.exam.ExamSessionStudentAnsw
 import edu.exam_online.exam_online_system.repository.exam.ExamSessionStudentRepository;
 import edu.exam_online.exam_online_system.service.exam.ExamSessionStudentService;
 import edu.exam_online.exam_online_system.utils.SecurityUtils;
-import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -59,6 +65,67 @@ public class ExamSessionStudentServiceImpl implements ExamSessionStudentService 
 
     ExamSessionStudentMapper examSessionStudentMapper;
     ExamSessionStudentAnswerMapper examSessionStudentAnswerMapper;
+
+    @Override
+    @Transactional
+    public void teacherFeedBack(Long examSessionStudentId, TeacherOverallFeedBackRequest request){
+        ExamSessionStudent examSessionStudent = examSessionStudentRepository.findById(examSessionStudentId)
+                .orElseThrow(() -> new AppException(ErrorCode.EXAM_SESSION_STUDENT_NOT_FOUND));
+
+        examSessionStudentMapper.updateEntity(examSessionStudent, request);
+        examSessionStudentRepository.save(examSessionStudent);
+    }
+
+    @Override
+    public Page<StudentJoinedExamSessionResponse> getStudentJoinedExamSession(Long examSessionId, Pageable pageable){
+        Page<ExamSessionStudent> examSessionStudents = examSessionStudentRepository.findByExamSessionId(examSessionId, pageable);
+        return examSessionStudents.map(examSessionStudentMapper::toJoinedResponse);
+    }
+
+    @Override
+    @Transactional
+    public ExamSessionStudentResultResponse getResultByExamSessionId(Long examSessionId){
+        Long studentId = SecurityUtils.getUserId();
+        ExamSessionStudent examSessionStudent = examSessionStudentRepository.findByExamSessionIdAndStudentId(examSessionId, studentId);
+        if(examSessionStudent == null){
+            throw new AppException(ErrorCode.EXAM_SESSION_STUDENT_NOT_FOUND);
+        }
+        return examSessionStudentMapper.toResponse(examSessionStudent);
+    }
+
+    @Override
+    public ExamSessionStudentResultResponse getExamSessionResultByExamSessionStudentId(Long examSessionStudentId){
+        ExamSessionStudent examSessionStudent = examSessionStudentRepository.findById(examSessionStudentId)
+                .orElseThrow(() -> new AppException(ErrorCode.EXAM_SESSION_STUDENT_NOT_FOUND));
+
+        return examSessionStudentMapper.toResponse(examSessionStudent);
+    }
+
+    @Override
+    @Transactional
+    public void autoSaveExamSessionStudent(){
+        List<ExamSessionStudent> examSessionStudents = examSessionStudentRepository.findExpiredExamSessionStudent();
+        examSessionStudents.forEach(examSessionStudent -> {
+            examSessionStudent.setSubmittedAt(examSessionStudent.getExpiredAt());
+            examSessionStudent.setStatus(COMPLETED);
+        });
+        examSessionStudentRepository.saveAll(examSessionStudents);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ExamSessionStudentResponse> searchExamSession(Pageable pageable) {
+        Long studentId = SecurityUtils.getUserId();
+        Page<ExamSessionStudent> resultPage = examSessionStudentRepository.findByStudentIdAndStatus(studentId, COMPLETED, pageable);
+        return resultPage.map( entity ->{
+            ExamSessionStudentResponse dto = examSessionStudentMapper.toDto(entity);
+            examSessionStudentMapper.toDto(entity);
+            if (dto.getTotalScore() == null) {
+                dto.setTotalScore(computeFallbackScore(entity));
+            }
+            return dto;
+        });
+    }
 
     @Override
     @Transactional
@@ -193,11 +260,28 @@ public class ExamSessionStudentServiceImpl implements ExamSessionStudentService 
     private void saveFinalExamSessionStudentAnswer(ExamSessionStudent examSessionStudent, Long studentId, ExamSessionStudentSaveRequest request){
         List<Long> answerIds = request.getQuestions().stream().map(QuestionSaveRequest::getAnswerId).toList();
         List<Answer> answers = answerRepository.findByIdIn(answerIds);
-        Map<Long, Answer> idToAnswerMap = answers.stream().collect(Collectors.toMap(Answer::getId, answer -> answer));
+        Map<Long, Answer> questionIdToAnswerMap = answers.stream().collect(Collectors.toMap(answer -> answer.getQuestion().getId(), answer -> answer));
         examSessionStudent.setStatus(COMPLETED);
-        examSessionStudent.getAnswers().forEach(answer -> {
-            answer.setSelectedAnswer(idToAnswerMap.get(answer.getQuestion().getId()));
+        examSessionStudent.setSubmittedAt(LocalDateTime.now());
+        examSessionStudent.getAnswers().forEach(examSessionAnswer -> {
+            examSessionAnswer.setSelectedAnswer(questionIdToAnswerMap.get(examSessionAnswer.getQuestion().getId()));
         });
+
+        //count final point
+        examSessionStudent.setTotalScore(computeFallbackScore(examSessionStudent));
         examSessionStudentRepository.save(examSessionStudent);
     }
+
+
+
+    private Float computeFallbackScore(ExamSessionStudent entity) {
+        if (entity.getAnswers() == null || entity.getAnswers().isEmpty()) {
+            return 0f;
+        }
+        long correctCount = entity.getAnswers().stream()
+                .filter(a -> a.getSelectedAnswer() != null && a.getSelectedAnswer().isCorrect())
+                .count();
+        return (float) correctCount;
+    }
+
 }

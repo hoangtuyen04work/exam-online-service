@@ -20,6 +20,7 @@ public interface AnswerMapper {
     @Mapping(target = "question", source = "question")
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "isCorrect", source = "request.correct")
     Answer toEntity(AnswerCreationRequest request, Question question);
 
 

@@ -1,6 +1,7 @@
 package edu.exam_online.exam_online_system.mapper;
 
 import edu.exam_online.exam_online_system.dto.request.exam.ExamCreationRequest;
+import edu.exam_online.exam_online_system.dto.request.exam.ExamImportRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamUpdateQuestionsRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamUpdateRequest;
 import edu.exam_online.exam_online_system.dto.response.exam.teacher.ExamDetailResponse;
@@ -22,6 +23,8 @@ public interface ExamMapper {
     void updateEntity(@MappingTarget Exam exam, ExamUpdateQuestionsRequest request);
 
     Exam toEntity(ExamCreationRequest request);
+
+    Exam toEntity(ExamImportRequest request);
 
     @Mapping(target = "examId", source = "id")
     ExamResponse toResponse(Exam exam);
