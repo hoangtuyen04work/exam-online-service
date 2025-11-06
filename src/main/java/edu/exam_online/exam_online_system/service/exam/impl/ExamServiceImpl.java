@@ -1,13 +1,16 @@
 package edu.exam_online.exam_online_system.service.exam.impl;
 
+import edu.exam_online.exam_online_system.commons.constant.Difficulty;
 import edu.exam_online.exam_online_system.dto.request.exam.AnswerUpdateRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamCreationRequest;
+import edu.exam_online.exam_online_system.dto.request.exam.ExamImportRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamUpdateQuestionsRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.QuestionCreationRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.QuestionUpdateRequest;
 import edu.exam_online.exam_online_system.dto.response.exam.teacher.ExamDetailResponse;
 import edu.exam_online.exam_online_system.dto.response.exam.teacher.ExamResponse;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamUpdateRequest;
+import edu.exam_online.exam_online_system.dto.response.exam.teacher.ImportResultResponse;
 import edu.exam_online.exam_online_system.dto.response.exam.teacher.QuestionResponse;
 import edu.exam_online.exam_online_system.entity.auth.User;
 import edu.exam_online.exam_online_system.entity.exam.Answer;
@@ -26,6 +29,10 @@ import edu.exam_online.exam_online_system.repository.exam.ExamRepository;
 import edu.exam_online.exam_online_system.repository.exam.QuestionRepository;
 import edu.exam_online.exam_online_system.service.exam.ExamService;
 import edu.exam_online.exam_online_system.utils.SecurityUtils;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +41,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +64,57 @@ public class ExamServiceImpl implements ExamService {
     QuestionMapper questionMapper;
     AnswerMapper answerMapper;
     QuestionExamMapper questionExamMapper;
+
+    @Override
+    @Transactional
+    public ImportResultResponse importFromExcel(ExamImportRequest request, MultipartFile file) {
+        Exam exam = examMapper.toEntity(request);
+
+        List<String> errors = new ArrayList<>();
+        List<Question> questions = new ArrayList<>();
+        List<QuestionExam> questionExams = new ArrayList<>();
+        exam.setQuestionExams(questionExams);
+
+
+        try (Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
+            Sheet sheet = workbook.getSheetAt(0);
+
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row == null) continue;
+
+                try {
+                    QuestionExam questionExam = new QuestionExam();
+                    questionExams.add(questionExam);
+                    Question q = new Question();
+                    questionExam.setQuestion(q);
+                    q.getQuestionExams().add(questionExam);
+                    q.setContent(row.getCell(1).getStringCellValue());
+                    q.setDifficulty(Difficulty.valueOf(row.getCell(2).getStringCellValue()));
+                    String rightAnswer = row.getCell(3).getStringCellValue();
+                    int j = 4;
+                    while (j <= row.getLastCellNum()) {
+                        String answer = row.getCell(j).getStringCellValue();
+                        Answer a = new Answer();
+                        a.setContent(answer);
+                        a.setCorrect(answer.equals(rightAnswer));
+                        q.getAnswers().add(a);
+                        j++;
+                    }
+                    questions.add(q);
+                } catch (Exception e) {
+                    errors.add("Lỗi ở dòng " + (i + 1) + ": " + e.getMessage());
+                }
+            }
+
+            questionRepository.saveAll(questions);
+        } catch (Exception e) {
+            errors.add("Không thể đọc file: " + e.getMessage());
+        }
+
+
+        return new ImportResultResponse(questions.size(), errors);
+    }
 
     @Override
     @Transactional

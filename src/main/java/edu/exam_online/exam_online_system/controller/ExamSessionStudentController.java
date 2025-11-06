@@ -1,17 +1,22 @@
 package edu.exam_online.exam_online_system.controller;
 
 import edu.exam_online.exam_online_system.commons.BaseResponse;
+import edu.exam_online.exam_online_system.commons.PageResponse;
 import edu.exam_online.exam_online_system.commons.constant.ExamSubmitStateEnum;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamSessionStudentSaveRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExitEventRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.JoinExamRequest;
 import edu.exam_online.exam_online_system.dto.response.exam.student.ExamSessionContentResponse;
+import edu.exam_online.exam_online_system.dto.response.exam.student.ExamSessionStudentResponse;
 import edu.exam_online.exam_online_system.dto.response.exam.student.JoinExamSessionResponse;
+import edu.exam_online.exam_online_system.dto.response.exam.student.result.ExamSessionStudentResultResponse;
 import edu.exam_online.exam_online_system.service.exam.ExamSessionStudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +32,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class ExamSessionStudentController {
     ExamSessionStudentService examSessionStudentService;
 
+
+    @GetMapping("/search")
+    public PageResponse<ExamSessionStudentResponse> searchExamSession(@ParameterObject Pageable pageable) {
+        return PageResponse.success(examSessionStudentService.searchExamSession(pageable));
+    }
+
+    @GetMapping("/result/{examSessionId}")
+    public BaseResponse<ExamSessionStudentResultResponse> getResultByExamSessionId(@PathVariable Long examSessionId) {
+        return BaseResponse.success(examSessionStudentService.getResultByExamSessionId(examSessionId));
+    }
 
     @PostMapping("/exit")
     @Operation(summary = "Save exit event")

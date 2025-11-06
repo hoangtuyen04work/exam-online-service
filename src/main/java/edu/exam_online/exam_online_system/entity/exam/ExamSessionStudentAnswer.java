@@ -56,6 +56,9 @@ public class ExamSessionStudentAnswer {
     @JoinColumn(name = "answer_id")
     private Answer selectedAnswer;
 
+    @Column(name = "teacher_feedback", columnDefinition = "TEXT")
+    private String teacherFeedback;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
