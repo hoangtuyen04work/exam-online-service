@@ -22,9 +22,9 @@ spring:
             required: true
     default-encoding: UTF-8
   datasource:
-    url: jdbc:mysql://localhost:3306/exam_online_system?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: root
-    password: 123
+    url: ${URL:jdbc:mysql://localhost:3306/exam_online_system?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
+    username: ${USERNAME:root}
+    password: ${PASSWORD:123}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
