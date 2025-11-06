@@ -5,6 +5,7 @@ import edu.exam_online.exam_online_system.commons.PageResponse;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamSessionCreationRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamSessionUpdateRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.TeacherOverallFeedBackRequest;
+import edu.exam_online.exam_online_system.dto.request.param.ExamSessionSearchParam;
 import edu.exam_online.exam_online_system.dto.response.exam.student.result.ExamSessionStudentResultResponse;
 import edu.exam_online.exam_online_system.dto.response.exam.teacher.ExamSessionResponse;
 import edu.exam_online.exam_online_system.dto.response.exam.teacher.StudentJoinedExamSessionResponse;
@@ -56,8 +57,8 @@ public class ExamSessionController {
 
     @GetMapping("/search")
     @Operation(summary ="Get all exam session")
-    public PageResponse<ExamSessionResponse> getAll(@ParameterObject Pageable pageable){
-        return PageResponse.success(examSessionService.getAll(pageable));
+    public PageResponse<ExamSessionResponse> getAll(@ParameterObject ExamSessionSearchParam param, @ParameterObject Pageable pageable){
+        return PageResponse.success(examSessionService.getAll(param, pageable));
     }
 
     @GetMapping
