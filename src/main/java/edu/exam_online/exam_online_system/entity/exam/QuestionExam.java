@@ -36,7 +36,8 @@ public class QuestionExam {
     private Long id;
 
     @Column(name = "point", nullable = true)
-    private Float point;
+    @Builder.Default
+    private Float point = 1F;
 
     @Column(name = "order_column", nullable = true)
     private Integer orderColumn;

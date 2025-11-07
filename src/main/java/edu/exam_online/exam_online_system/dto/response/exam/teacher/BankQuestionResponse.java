@@ -1,18 +1,18 @@
 package edu.exam_online.exam_online_system.dto.response.exam.teacher;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class BankQuestionResponse {
-    private Long id;
+    private Long bankQuestionId;
     private String name;
     private String description;
-    private String teacherName;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }

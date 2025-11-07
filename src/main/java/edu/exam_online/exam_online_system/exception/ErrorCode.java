@@ -42,6 +42,7 @@ public enum ErrorCode{
     EXAM_CLOSED(400, "Exam closed", HttpStatus.BAD_REQUEST),
     CANNOT_JOIN_EXAM_SESSION(400, "Can not join exam session", HttpStatus.BAD_REQUEST),
     EXAM_SESSION_STUDENT_NOT_FOUND(400, "Exam session student not found", HttpStatus.BAD_REQUEST),
+    BANK_QUESTION_NOT_FOUND(400, "Bank question not found", HttpStatus.NOT_FOUND),
     QUESTION_NOT_FOUND(400, "Question not found", HttpStatus.NOT_FOUND);
 
     @Getter

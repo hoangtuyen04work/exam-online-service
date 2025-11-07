@@ -1,5 +1,6 @@
 package edu.exam_online.exam_online_system.service.exam;
 
+import edu.exam_online.exam_online_system.dto.request.exam.ExamBankQuestionCreationRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamCreationRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamImportRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamUpdateQuestionsRequest;
@@ -12,7 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ExamService {
-    ImportResultResponse importFromExcel(ExamImportRequest request, MultipartFile file);
+
+    void createExamFromBankQuestion(ExamBankQuestionCreationRequest request);
 
     void deleteById(Long examId);
 

@@ -34,6 +34,9 @@ public interface ExamSessionStudentMapper {
     default void updateEntity(ExamSessionStudent examSessionStudent, TeacherOverallFeedBackRequest request){
         examSessionStudent.setTeacherOverallFeedback(request.getTeacherOverallFeedBack());
 
+        if(request.getTeacherFeedBackRequests() == null || request.getTeacherFeedBackRequests().isEmpty()){
+            return;
+        }
         Map<Long, String> questionIdToTeacherFeedBack = request.getTeacherFeedBackRequests().stream()
                         .collect(Collectors.toMap(TeacherFeedBackRequest::getQuestionId, TeacherFeedBackRequest::getTeacherFeedBack));
         examSessionStudent.getAnswers()
