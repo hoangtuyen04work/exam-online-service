@@ -56,7 +56,7 @@ public class ExamSessionController {
     }
 
     @GetMapping("/search")
-    @Operation(summary ="Get all exam session")
+    @Operation(summary ="Get all exam session of a exam")
     public PageResponse<ExamSessionResponse> getAll(@ParameterObject ExamSessionSearchParam param, @ParameterObject Pageable pageable){
         return PageResponse.success(examSessionService.getAll(param, pageable));
     }

@@ -18,7 +18,6 @@ import edu.exam_online.exam_online_system.entity.exam.Answer;
 import edu.exam_online.exam_online_system.entity.exam.ExamSession;
 import edu.exam_online.exam_online_system.entity.exam.ExamSessionStudent;
 import edu.exam_online.exam_online_system.entity.exam.ExamSessionStudentAnswer;
-import edu.exam_online.exam_online_system.entity.exam.Question;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -27,8 +26,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
@@ -70,61 +67,35 @@ public interface ExamSessionStudentMapper {
         if (examSessionStudent == null || examSessionStudent.getAnswers() == null) {
             return Collections.emptyList();
         }
-
-        Map<Long, List<ExamSessionStudentAnswer>> questionIdToAnswerIds = examSessionStudent.getAnswers()
-                .stream()
-                .filter(Objects::nonNull)
-                .filter(a -> a.getQuestion() != null)
-                .collect(Collectors.groupingBy(e -> e.getQuestion().getId()));
-
-        Map<Long, Question> idToQuestion = examSessionStudent.getAnswers().stream()
-                .collect(Collectors.toMap(
-                        examSessionStudentAnswer -> examSessionStudentAnswer.getQuestion().getId(),   // key: ID của câu hỏi
-                        ExamSessionStudentAnswer::getQuestion                       // value: đối tượng Question
-                ));
-
-        return questionIdToAnswerIds.entrySet().stream()
-                .map(entry -> mapQuestion(idToQuestion.get(entry.getKey()), entry.getValue()))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        return examSessionStudent.getAnswers().stream()
+                .map(this::mapQuestionResult)
+                .toList();
     }
 
-    default QuestionResultResponse mapQuestion(Question question, List<ExamSessionStudentAnswer> studentAnswers) {
-        if (question == null) return null;
-        QuestionResultResponse qdto = new QuestionResultResponse();
-        qdto.setQuestionId(question.getId());
-        qdto.setContent(question.getContent());
-        qdto.setExplanation(question.getExplanation());
-
-        List<AnswerResultResponse> answers = Optional.ofNullable(question.getAnswers())
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(answer -> mapAnswer(answer, studentAnswers))
-                .collect(Collectors.toList());
-
-        qdto.setAnswers(answers);
-        return qdto;
+    default QuestionResultResponse mapQuestionResult(ExamSessionStudentAnswer answer) {
+        return QuestionResultResponse.builder()
+                .questionId(answer.getQuestion().getId())
+                .content(answer.getQuestion().getContent())
+                .explanation(answer.getQuestion().getExplanation())
+                .teacherFeedback(answer.getTeacherFeedback())
+                .answers(mapAnswers(answer))
+                .build();
     }
 
-    default AnswerResultResponse mapAnswer(Answer answer, List<ExamSessionStudentAnswer> studentAnswers) {
-        if (answer == null) return null;
+    default List<AnswerResultResponse> mapAnswers(ExamSessionStudentAnswer answer){
+        return answer.getQuestion().getAnswers()
+                .stream()
+                .map(a -> toAnswerResultResponse(answer, a))
+                .toList();
+    }
 
-        AnswerResultResponse adto = new AnswerResultResponse();
-        adto.setAnswerId(answer.getId());
-        adto.setContent(answer.getContent());
-        adto.setCorrect(answer.isCorrect());
-
-        boolean selected = false;
-        if (studentAnswers != null && !studentAnswers.isEmpty()) {
-            selected = studentAnswers.stream()
-                    .map(ExamSessionStudentAnswer::getSelectedAnswer)
-                    .filter(Objects::nonNull)
-                    .map(Answer::getId)
-                    .anyMatch(id -> id != null && id.equals(answer.getId()));
-        }
-        adto.setSelected(selected);
-
-        return adto;
+    default AnswerResultResponse toAnswerResultResponse(ExamSessionStudentAnswer examSessionStudentAnswer , Answer answer){
+        return AnswerResultResponse.builder()
+                .answerId(answer.getId())
+                .content(answer.getContent())
+                .correct(answer.isCorrect())
+                .selected(examSessionStudentAnswer.getSelectedAnswer() != null && examSessionStudentAnswer.getSelectedAnswer().getId().equals(answer.getId()))
+                .build();
     }
 
     @Mapping(target = "examSessionId", source = "examSession.id")

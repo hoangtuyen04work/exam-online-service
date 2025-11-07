@@ -7,3 +7,8 @@ ALTER TABLE exam_session_students
 
 ALTER TABLE exam_session_student_answers
     ADD COLUMN teacher_feedback TEXT AFTER answer_id;
+
+-- changeset tuyen_hh:1760056000000
+ALTER TABLE exam_session_students
+    ADD CONSTRAINT uq_exam_session_student UNIQUE (exam_session_id, student_id);
+
