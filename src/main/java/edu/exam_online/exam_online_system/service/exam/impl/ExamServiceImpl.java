@@ -1,19 +1,18 @@
 package edu.exam_online.exam_online_system.service.exam.impl;
 
-import edu.exam_online.exam_online_system.commons.constant.Difficulty;
 import edu.exam_online.exam_online_system.dto.request.exam.AnswerUpdateRequest;
+import edu.exam_online.exam_online_system.dto.request.exam.ExamBankQuestionCreationRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamCreationRequest;
-import edu.exam_online.exam_online_system.dto.request.exam.ExamImportRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamUpdateQuestionsRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.QuestionCreationRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.QuestionUpdateRequest;
 import edu.exam_online.exam_online_system.dto.response.exam.teacher.ExamDetailResponse;
 import edu.exam_online.exam_online_system.dto.response.exam.teacher.ExamResponse;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamUpdateRequest;
-import edu.exam_online.exam_online_system.dto.response.exam.teacher.ImportResultResponse;
 import edu.exam_online.exam_online_system.dto.response.exam.teacher.QuestionResponse;
 import edu.exam_online.exam_online_system.entity.auth.User;
 import edu.exam_online.exam_online_system.entity.exam.Answer;
+import edu.exam_online.exam_online_system.entity.exam.BankQuestion;
 import edu.exam_online.exam_online_system.entity.exam.Exam;
 import edu.exam_online.exam_online_system.entity.exam.Question;
 import edu.exam_online.exam_online_system.entity.exam.QuestionExam;
@@ -25,14 +24,11 @@ import edu.exam_online.exam_online_system.mapper.QuestionExamMapper;
 import edu.exam_online.exam_online_system.mapper.QuestionMapper;
 import edu.exam_online.exam_online_system.repository.auth.UserRepository;
 import edu.exam_online.exam_online_system.repository.exam.AnswerRepository;
+import edu.exam_online.exam_online_system.repository.exam.BankQuestionRepository;
 import edu.exam_online.exam_online_system.repository.exam.ExamRepository;
 import edu.exam_online.exam_online_system.repository.exam.QuestionRepository;
 import edu.exam_online.exam_online_system.service.exam.ExamService;
 import edu.exam_online.exam_online_system.utils.SecurityUtils;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,9 +37,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -58,6 +54,7 @@ public class ExamServiceImpl implements ExamService {
     ExamRepository examRepository;
     UserRepository userRepository;
     QuestionRepository questionRepository;
+    BankQuestionRepository bankQuestionRepository;
     AnswerRepository answerRepository;
 
     ExamMapper examMapper;
@@ -67,53 +64,20 @@ public class ExamServiceImpl implements ExamService {
 
     @Override
     @Transactional
-    public ImportResultResponse importFromExcel(ExamImportRequest request, MultipartFile file) {
+    public void createExamFromBankQuestion(ExamBankQuestionCreationRequest request){
+        Long userId = SecurityUtils.getUserId();
+        BankQuestion bankQuestion = bankQuestionRepository.findByIdAndTeacherId(request.getBankQuestionId(), userId)
+                .orElseThrow(() -> new AppException(ErrorCode.BANK_QUESTION_NOT_FOUND));
+
+        List<Question> questions = bankQuestion.getQuestions();
+        Collections.shuffle(questions);
+
+        List<Question> questionShuffles = questions.stream().limit(request.getNumber()).toList();
         Exam exam = examMapper.toEntity(request);
-
-        List<String> errors = new ArrayList<>();
-        List<Question> questions = new ArrayList<>();
-        List<QuestionExam> questionExams = new ArrayList<>();
+        List<QuestionExam> questionExams =  questionShuffles.stream()
+                .map(question -> questionExamMapper.toEntity(exam, question)).toList();
         exam.setQuestionExams(questionExams);
-
-
-        try (Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
-            Sheet sheet = workbook.getSheetAt(0);
-
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                Row row = sheet.getRow(i);
-                if (row == null) continue;
-
-                try {
-                    QuestionExam questionExam = new QuestionExam();
-                    questionExams.add(questionExam);
-                    Question q = new Question();
-                    questionExam.setQuestion(q);
-                    q.getQuestionExams().add(questionExam);
-                    q.setContent(row.getCell(1).getStringCellValue());
-                    q.setDifficulty(Difficulty.valueOf(row.getCell(2).getStringCellValue()));
-                    String rightAnswer = row.getCell(3).getStringCellValue();
-                    int j = 4;
-                    while (j <= row.getLastCellNum()) {
-                        String answer = row.getCell(j).getStringCellValue();
-                        Answer a = new Answer();
-                        a.setContent(answer);
-                        a.setCorrect(answer.equals(rightAnswer));
-                        q.getAnswers().add(a);
-                        j++;
-                    }
-                    questions.add(q);
-                } catch (Exception e) {
-                    errors.add("Lỗi ở dòng " + (i + 1) + ": " + e.getMessage());
-                }
-            }
-
-            questionRepository.saveAll(questions);
-        } catch (Exception e) {
-            errors.add("Không thể đọc file: " + e.getMessage());
-        }
-
-
-        return new ImportResultResponse(questions.size(), errors);
+        examRepository.save(exam);
     }
 
     @Override
@@ -129,7 +93,7 @@ public class ExamServiceImpl implements ExamService {
 
         Exam exam = examRepository.findById(examId)
                 .orElseThrow(() -> new AppException(ErrorCode.EXAM_NOT_FOUND));
-
+        examMapper.updateEntity(exam, request);
 
         List<Long> questionIdUpdates = request.getQuestions().stream()
                 .map(QuestionUpdateRequest::getQuestionId)
@@ -368,7 +332,6 @@ public class ExamServiceImpl implements ExamService {
         question.getQuestionExams().add(questionExam);
         return questionExam;
     }
-
 
     private Question createQuestion(QuestionUpdateRequest request){
         Question question = questionMapper.toEntity(request);

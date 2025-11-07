@@ -2,6 +2,7 @@ package edu.exam_online.exam_online_system.controller;
 
 import edu.exam_online.exam_online_system.commons.BaseResponse;
 import edu.exam_online.exam_online_system.commons.PageResponse;
+import edu.exam_online.exam_online_system.dto.request.exam.ExamBankQuestionCreationRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamCreationRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamImportRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamUpdateQuestionsRequest;
@@ -35,13 +36,20 @@ public class ExamController {
 
     ExamService examService;
 
-    @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Import exam from question")
-    public BaseResponse<ImportResultResponse> importQuestions(
-            @RequestPart("request") ExamImportRequest request,
-            @RequestPart("file") MultipartFile file) {
-        return BaseResponse.success(examService.importFromExcel(request, file));
+    @PostMapping("/bank-question")
+    @Operation(summary = "Create exam from bank question")
+    public BaseResponse<Void> createExamFromBankQuestion(@RequestBody ExamBankQuestionCreationRequest request){
+        examService.createExamFromBankQuestion(request);
+        return BaseResponse.success();
     }
+
+//    @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    @Operation(summary = "Import exam from question")
+//    public BaseResponse<ImportResultResponse> importQuestions(
+//            @RequestPart("request") ExamImportRequest request,
+//            @RequestPart("file") MultipartFile file) {
+//        return BaseResponse.success(examService.importFromExcel(request, file));
+//    }
 
     @PutMapping("/bulk-update/{examId}")
     @Operation(summary ="Update all info of exam like basic, question and answer")

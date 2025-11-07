@@ -1,5 +1,6 @@
 package edu.exam_online.exam_online_system.mapper;
 
+import edu.exam_online.exam_online_system.dto.request.exam.ExamBankQuestionCreationRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamCreationRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamImportRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamUpdateQuestionsRequest;
@@ -20,8 +21,12 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ExamMapper {
 
-    void updateEntity(@MappingTarget Exam exam, ExamUpdateQuestionsRequest request);
+    Exam toEntity(ExamBankQuestionCreationRequest request);
 
+    default void updateEntity(Exam exam, ExamUpdateQuestionsRequest request){
+        exam.setName(request.getName());
+        exam.setDescription(request.getDescription());
+    }
     Exam toEntity(ExamCreationRequest request);
 
     Exam toEntity(ExamImportRequest request);

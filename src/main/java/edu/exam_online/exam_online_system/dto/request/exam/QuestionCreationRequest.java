@@ -32,6 +32,5 @@ public class QuestionCreationRequest {
     @Size(max = 2000, message = "Giải thích không được vượt quá 2000 ký tự")
     private String explanation;
 
-    @Valid
-    private List<AnswerCreationRequest> answers;
+    private List<@Valid AnswerCreationRequest> answers;
 }

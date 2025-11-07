@@ -28,18 +28,6 @@ public class ExamUpdateQuestionsRequest {
     @Positive(message = "Tổng điểm phải lớn hơn 0")
     private Integer totalPoint;
 
-    @NotNull(message = "Thời lượng làm bài không được để trống")
-    @Positive(message = "Thời lượng phải lớn hơn 0")
-    private Integer durationMinutes;
-
-    @NotNull(message = "Thời gian bắt đầu không được để trống")
-    @Future(message = "Thời gian bắt đầu phải ở tương lai")
-    private LocalDateTime timeStart;
-
-    @NotNull(message = "Thời gian kết thúc không được để trống")
-    @Future(message = "Thời gian kết thúc phải ở tương lai")
-    private LocalDateTime timeEnd;
-
     @NotNull(message = "Danh sách câu hỏi không được để trống")
     @Size(min = 1, message = "Phải có ít nhất một câu hỏi trong đề thi")
     private List<@Valid QuestionUpdateRequest> questions;

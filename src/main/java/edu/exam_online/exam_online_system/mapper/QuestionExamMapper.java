@@ -7,12 +7,16 @@ import edu.exam_online.exam_online_system.entity.exam.Question;
 import edu.exam_online.exam_online_system.entity.exam.QuestionExam;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import java.util.ArrayList;
 
 @Mapper(componentModel = "spring")
 public interface QuestionExamMapper {
+
+    @Mapping(target = "id", ignore = true)
+    QuestionExam toEntity(Exam exam, Question question);
 
     QuestionExam toEntity(QuestionUpdateRequest request);
 

@@ -1,21 +1,19 @@
-package edu.exam_online.exam_online_system.dto.request.exam;
+package edu.exam_online.exam_online_system.dto.response.exam.teacher;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-public class BankQuestionRequest {
+public class BankQuestionDetailResponse {
     private Long bankQuestionId;
     private String name;
     private String description;
     private LocalDateTime createdAt;
+    private List<QuestionResponse> questions;
 }

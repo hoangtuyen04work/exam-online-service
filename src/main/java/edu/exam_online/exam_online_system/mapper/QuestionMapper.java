@@ -40,6 +40,8 @@ public interface QuestionMapper {
     @Mapping(source = "questionExam.orderColumn", target = "orderColumn")
     QuestionResponse toQuestionResponse(QuestionExam questionExam);
 
+    List<QuestionResponse> toResponse(List<Question> questions);
+
     List<QuestionResponse> toQuestionResponseList(List<QuestionExam> questionExams);
 
     @AfterMapping
