@@ -18,10 +18,10 @@ public interface ExamSessionStudentRepository extends JpaRepository<ExamSessionS
 
     boolean existsByExamSessionIdAndStudentId(Long examSessionId, Long studentId);
 
-    Page<ExamSessionStudent> findByStudentIdAndStatus(Long studentId, ExamStudentStatusEnum status, Pageable pageable);
+    Page<ExamSessionStudent> findByStudentIdAndStatusOrderByCreatedAtDesc(Long studentId, ExamStudentStatusEnum status, Pageable pageable);
 
     @Query("SELECT es FROM ExamSessionStudent es WHERE es.examSession.expiredAt < CURRENT_TIMESTAMP")
     List<ExamSessionStudent> findExpiredExamSessionStudent();
 
-    Page<ExamSessionStudent> findByExamSessionId(Long examSessionId, Pageable pageable);
+    Page<ExamSessionStudent> findByExamSessionIdOrderByCreatedAtDesc(Long examSessionId, Pageable pageable);
 }

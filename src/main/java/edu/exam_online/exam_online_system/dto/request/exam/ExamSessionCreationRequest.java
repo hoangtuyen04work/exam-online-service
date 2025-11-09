@@ -26,5 +26,5 @@ public class ExamSessionCreationRequest {
 
     private LocalDateTime expiredAt;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime startAt;
 }

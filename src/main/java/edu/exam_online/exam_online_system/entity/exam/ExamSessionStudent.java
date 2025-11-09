@@ -2,6 +2,7 @@ package edu.exam_online.exam_online_system.entity.exam;
 
 import edu.exam_online.exam_online_system.commons.constant.ExamStudentStatusEnum;
 import edu.exam_online.exam_online_system.entity.auth.User;
+import edu.exam_online.exam_online_system.utils.TimeUtils;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -63,7 +64,7 @@ public class ExamSessionStudent {
 
     @Column(name = "started_at")
     @Builder.Default
-    private LocalDateTime startedAt = LocalDateTime.now();
+    private LocalDateTime startedAt = TimeUtils.getCurrentTime();
 
     @Column(name = "submitted_at")
     private LocalDateTime submittedAt;

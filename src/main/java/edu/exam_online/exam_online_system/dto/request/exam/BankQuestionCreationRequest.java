@@ -19,9 +19,6 @@ public class BankQuestionCreationRequest {
     @Size(max = 255, message = "Tên ngân hàng câu hỏi không được vượt quá 255 ký tự")
     private String name;
 
-    @NotNull(message = "Teacher ID không được để trống")
-    private Long teacherId;
-
     @Size(max = 2000, message = "Mô tả không được vượt quá 2000 ký tự")
     private String description;
 

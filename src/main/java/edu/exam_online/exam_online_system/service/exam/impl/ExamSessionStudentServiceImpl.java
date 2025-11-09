@@ -29,6 +29,7 @@ import edu.exam_online.exam_online_system.repository.exam.ExamSessionStudentAnsw
 import edu.exam_online.exam_online_system.repository.exam.ExamSessionStudentRepository;
 import edu.exam_online.exam_online_system.service.exam.ExamSessionStudentService;
 import edu.exam_online.exam_online_system.utils.SecurityUtils;
+import edu.exam_online.exam_online_system.utils.TimeUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -78,7 +79,7 @@ public class ExamSessionStudentServiceImpl implements ExamSessionStudentService 
 
     @Override
     public Page<StudentJoinedExamSessionResponse> getStudentJoinedExamSession(Long examSessionId, Pageable pageable){
-        Page<ExamSessionStudent> examSessionStudents = examSessionStudentRepository.findByExamSessionId(examSessionId, pageable);
+        Page<ExamSessionStudent> examSessionStudents = examSessionStudentRepository.findByExamSessionIdOrderByCreatedAtDesc(examSessionId, pageable);
         return examSessionStudents.map(examSessionStudentMapper::toJoinedResponse);
     }
 
@@ -116,7 +117,7 @@ public class ExamSessionStudentServiceImpl implements ExamSessionStudentService 
     @Transactional(readOnly = true)
     public Page<ExamSessionStudentResponse> searchExamSession(Pageable pageable) {
         Long studentId = SecurityUtils.getUserId();
-        Page<ExamSessionStudent> resultPage = examSessionStudentRepository.findByStudentIdAndStatus(studentId, COMPLETED, pageable);
+        Page<ExamSessionStudent> resultPage = examSessionStudentRepository.findByStudentIdAndStatusOrderByCreatedAtDesc(studentId, COMPLETED, pageable);
         return resultPage.map( entity ->{
             ExamSessionStudentResponse dto = examSessionStudentMapper.toDto(entity);
             examSessionStudentMapper.toDto(entity);
@@ -142,7 +143,7 @@ public class ExamSessionStudentServiceImpl implements ExamSessionStudentService 
     public boolean saveExam(ExamSubmitStateEnum state, ExamSessionStudentSaveRequest request) {
         Long studentId = SecurityUtils.getUserId();
         ExamSessionStudent examSessionStudent = examSessionStudentRepository.findByExamSessionIdAndStudentId(request.getExamSessionId(), studentId);
-        if(examSessionStudent.getExpiredAt().isBefore(LocalDateTime.now()) || examSessionStudent.getStatus().equals(COMPLETED)){
+        if(examSessionStudent.getExpiredAt().isBefore(TimeUtils.getCurrentTime()) || examSessionStudent.getStatus().equals(COMPLETED)){
             return false;
         }
         switch (state) {
@@ -188,7 +189,7 @@ public class ExamSessionStudentServiceImpl implements ExamSessionStudentService 
     }
 
     private JoinExamSessionResponse joinExam(ExamSession examSession, User student) {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = TimeUtils.getCurrentTime();
 
         if (now.isBefore(examSession.getStartAt())) {
             return examSessionStudentMapper.toResponse(examSession, NOT_OPEN);
@@ -205,7 +206,7 @@ public class ExamSessionStudentServiceImpl implements ExamSessionStudentService 
     }
 
     private void validateExamSession(ExamSession examSession) {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = TimeUtils.getCurrentTime();
         if(now.isBefore(examSession.getStartAt())){
             throw new AppException(ErrorCode.EXAM_NOT_YET_START);
         }
@@ -262,7 +263,8 @@ public class ExamSessionStudentServiceImpl implements ExamSessionStudentService 
         List<Answer> answers = answerRepository.findByIdIn(answerIds);
         Map<Long, Answer> questionIdToAnswerMap = answers.stream().collect(Collectors.toMap(answer -> answer.getQuestion().getId(), answer -> answer));
         examSessionStudent.setStatus(COMPLETED);
-        examSessionStudent.setSubmittedAt(LocalDateTime.now());
+        System.err.println(TimeUtils.getCurrentTime());
+        examSessionStudent.setSubmittedAt(TimeUtils.getCurrentTime());
         examSessionStudent.getAnswers().forEach(examSessionAnswer -> {
             examSessionAnswer.setSelectedAnswer(questionIdToAnswerMap.get(examSessionAnswer.getQuestion().getId()));
         });

@@ -3,6 +3,7 @@ package edu.exam_online.exam_online_system.mapper;
 import edu.exam_online.exam_online_system.dto.request.auth.RegisterRequest;
 import edu.exam_online.exam_online_system.entity.auth.Role;
 import edu.exam_online.exam_online_system.entity.auth.User;
+import edu.exam_online.exam_online_system.utils.TimeUtils;
 import org.mapstruct.Mapper;
 
 import java.time.LocalDateTime;
@@ -17,7 +18,7 @@ public interface UserMapper {
                 .password("password")
                 .isActive(true)
                 .isEmailVerified(true)
-                .createdAt(LocalDateTime.now())
+                .createdAt(TimeUtils.getCurrentTime())
                 .role(role)
                 .userCode(userCode)
                 .build();
@@ -30,7 +31,7 @@ public interface UserMapper {
                 .password(password)
                 .isActive(true)
                 .isEmailVerified(false)
-                .createdAt(LocalDateTime.now())
+                .createdAt(TimeUtils.getCurrentTime())
                 .role(role)
                 .userCode(userCode)
                 .build();

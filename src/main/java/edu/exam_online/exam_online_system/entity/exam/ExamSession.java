@@ -1,6 +1,7 @@
 package edu.exam_online.exam_online_system.entity.exam;
 
 import edu.exam_online.exam_online_system.entity.auth.User;
+import edu.exam_online.exam_online_system.utils.TimeUtils;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -67,7 +68,7 @@ public class ExamSession {
 
     @Builder.Default
     @Column(name = "start_at")
-    private LocalDateTime startAt = LocalDateTime.now();
+    private LocalDateTime startAt = TimeUtils.getCurrentTime();
 
     @Column(name = "expired_at")
     private LocalDateTime expiredAt;

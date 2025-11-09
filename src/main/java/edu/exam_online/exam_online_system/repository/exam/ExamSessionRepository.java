@@ -22,7 +22,7 @@ public interface ExamSessionRepository extends JpaRepository<ExamSession, Long> 
         WHERE e.owner.id = :ownerId
         AND (:examId IS NULL OR e.exam.id = :examId)
     """)
-    Page<ExamSession> findAllByOwnerId(
+    Page<ExamSession> findAllByOwnerIdOrderByCreatedAtDesc(
             @Param("examId") Long examId,
             @Param("ownerId") Long ownerId,
             Pageable pageable);
