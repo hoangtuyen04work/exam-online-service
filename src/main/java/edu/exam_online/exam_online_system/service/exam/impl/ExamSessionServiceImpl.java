@@ -83,7 +83,7 @@ public class ExamSessionServiceImpl implements ExamSessionService {
     @Transactional(readOnly = true)
     public Page<ExamSessionResponse> getAll(ExamSessionSearchParam param, Pageable pageable) {
         Long userId = SecurityUtils.getUserId();
-        Page<ExamSession> examSessions =  examSessionRepository.findAllByOwnerId(param.getExamId(), userId, pageable);
+        Page<ExamSession> examSessions =  examSessionRepository.findAllByOwnerIdOrderByCreatedAtDesc(param.getExamId(), userId, pageable);
         return examSessions.map(
                 examSession -> examSessionMapper.toResponse(examSession, generateInviteExamSession(examSession.getCode())));
     }

@@ -22,6 +22,7 @@ import edu.exam_online.exam_online_system.repository.auth.UserRepository;
 import edu.exam_online.exam_online_system.service.auth.AuthService;
 import edu.exam_online.exam_online_system.service.auth.EmailService;
 import edu.exam_online.exam_online_system.service.auth.TokenService;
+import edu.exam_online.exam_online_system.utils.TimeUtils;
 import edu.exam_online.exam_online_system.utils.TokenUtils;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -174,7 +175,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private void validateVerifyEmail(VerifyRegisterRequest request, Code verificationCode)  {
-        if (verificationCode.getExpiresAt().isBefore(LocalDateTime.now())) {
+        if (verificationCode.getExpiresAt().isBefore(TimeUtils.getCurrentTime())) {
             log.error("Verification code expired");
             throw new AppException(ErrorCode.VERIFICATION_CODE_EXPIRED);
         }

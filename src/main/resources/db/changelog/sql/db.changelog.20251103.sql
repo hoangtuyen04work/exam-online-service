@@ -12,3 +12,7 @@ ALTER TABLE exam_session_student_answers
 ALTER TABLE exam_session_students
     ADD CONSTRAINT uq_exam_session_student UNIQUE (exam_session_id, student_id);
 
+
+-- changeset tuyen_hh:1760057000000
+SET GLOBAL time_zone = '+07:00';
+

@@ -20,7 +20,7 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
     // Tìm theo tên kỳ thi
     List<Exam> findByNameContainingIgnoreCase(String name);
 
-    Page<Exam> findByTeacherId(Long teacherId, Pageable pageable);
+    Page<Exam> findByTeacherIdOrderByCreatedAtDesc(Long teacherId, Pageable pageable);
 
     Optional<Exam> findByIdAndTeacherId(Long id, Long teacherId);
 

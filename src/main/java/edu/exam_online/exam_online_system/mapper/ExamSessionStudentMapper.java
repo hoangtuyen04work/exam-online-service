@@ -18,6 +18,7 @@ import edu.exam_online.exam_online_system.entity.exam.Answer;
 import edu.exam_online.exam_online_system.entity.exam.ExamSession;
 import edu.exam_online.exam_online_system.entity.exam.ExamSessionStudent;
 import edu.exam_online.exam_online_system.entity.exam.ExamSessionStudentAnswer;
+import edu.exam_online.exam_online_system.utils.TimeUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -113,7 +114,7 @@ public interface ExamSessionStudentMapper {
         return ExamSessionStudent.builder()
                 .examSession(examSession)
                 .student(student)
-                .expiredAt(LocalDateTime.now().plusMinutes(durationMinutes))
+                .expiredAt(TimeUtils.getCurrentTime().plusMinutes(durationMinutes))
                 .build();
     }
 

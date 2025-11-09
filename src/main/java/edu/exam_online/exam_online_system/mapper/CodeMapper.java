@@ -3,6 +3,7 @@ package edu.exam_online.exam_online_system.mapper;
 import edu.exam_online.exam_online_system.commons.constant.CodeTypeEnum;
 import edu.exam_online.exam_online_system.entity.auth.Code;
 import edu.exam_online.exam_online_system.entity.auth.User;
+import edu.exam_online.exam_online_system.utils.TimeUtils;
 import org.mapstruct.Mapper;
 
 import java.time.LocalDateTime;
@@ -13,7 +14,7 @@ public interface CodeMapper {
         return Code.builder()
                 .code(code)
                 .codeType(CodeTypeEnum.REGISTER_CODE)
-                .expiresAt(LocalDateTime.now().plusMinutes(10))
+                .expiresAt(TimeUtils.getCurrentTime().plusMinutes(10))
                 .user(user)
                 .build();
     }

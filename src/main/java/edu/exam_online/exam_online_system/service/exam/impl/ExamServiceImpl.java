@@ -66,6 +66,9 @@ public class ExamServiceImpl implements ExamService {
     @Transactional
     public void createExamFromBankQuestion(ExamBankQuestionCreationRequest request){
         Long userId = SecurityUtils.getUserId();
+        User teacher = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
         BankQuestion bankQuestion = bankQuestionRepository.findByIdAndTeacherId(request.getBankQuestionId(), userId)
                 .orElseThrow(() -> new AppException(ErrorCode.BANK_QUESTION_NOT_FOUND));
 
@@ -76,7 +79,13 @@ public class ExamServiceImpl implements ExamService {
         Exam exam = examMapper.toEntity(request);
         List<QuestionExam> questionExams =  questionShuffles.stream()
                 .map(question -> questionExamMapper.toEntity(exam, question)).toList();
+        questionExams.forEach(questionExam -> questionExam.setExam(exam));
         exam.setQuestionExams(questionExams);
+        exam.setQuestionExams(questionExams);
+
+        teacher.getExams().add(exam);
+        exam.setTeacher(teacher);
+
         examRepository.save(exam);
     }
 
@@ -149,7 +158,7 @@ public class ExamServiceImpl implements ExamService {
     public Page<ExamResponse> getAllExam(Pageable pageable){
         Long teacherId = SecurityUtils.getUserId();
 
-        Page<Exam> exams = examRepository.findByTeacherId(teacherId, pageable);
+        Page<Exam> exams = examRepository.findByTeacherIdOrderByCreatedAtDesc(teacherId, pageable);
 
         return exams.map(examMapper::toResponse);
     }
@@ -258,7 +267,6 @@ public class ExamServiceImpl implements ExamService {
 
         question.getAnswers().addAll(answers);
     }
-
 
     private void updateQuestionContent(Question question, QuestionUpdateRequest qReq, Long teacherId) {
         questionMapper.updateEntity(question, qReq);

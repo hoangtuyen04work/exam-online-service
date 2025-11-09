@@ -42,6 +42,9 @@ public interface QuestionMapper {
 
     List<QuestionResponse> toResponse(List<Question> questions);
 
+    @Mapping(source = "id", target = "questionId")
+    QuestionResponse toResponse(Question question);
+
     List<QuestionResponse> toQuestionResponseList(List<QuestionExam> questionExams);
 
     @AfterMapping

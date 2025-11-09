@@ -18,7 +18,7 @@ public interface BankQuestionRepository extends JpaRepository<BankQuestion, Long
 
     List<BankQuestion> findByNameContainingIgnoreCase(String name);
 
-    Page<BankQuestion> findByTeacherId(Long teacherId, Pageable pageable);
+    Page<BankQuestion> findByTeacherIdOrderByCreatedAtDesc(Long teacherId, Pageable pageable);
 
     Optional<BankQuestion> findByTeacherIdAndId(Long teacherId, Long id);
 }

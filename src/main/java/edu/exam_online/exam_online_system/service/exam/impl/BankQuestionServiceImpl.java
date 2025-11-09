@@ -60,7 +60,7 @@ public class BankQuestionServiceImpl implements BankQuestionService {
     public Page<BankQuestionResponse> searchBankQuestion(Pageable pageable){
         Long userId = SecurityUtils.getUserId();
 
-        Page<BankQuestion> bankQuestions = bankQuestionRepository.findByTeacherId(userId, pageable);
+        Page<BankQuestion> bankQuestions = bankQuestionRepository.findByTeacherIdOrderByCreatedAtDesc(userId, pageable);
         return bankQuestions.map(bankQuestionMapper::toResponse);
     }
 
