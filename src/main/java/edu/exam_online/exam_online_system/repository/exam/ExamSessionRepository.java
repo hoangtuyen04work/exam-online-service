@@ -21,6 +21,7 @@ public interface ExamSessionRepository extends JpaRepository<ExamSession, Long> 
         SELECT e FROM ExamSession e
         WHERE e.owner.id = :ownerId
         AND (:examId IS NULL OR e.exam.id = :examId)
+        ORDER BY e.createdAt DESC
     """)
     Page<ExamSession> findAllByOwnerIdOrderByCreatedAtDesc(
             @Param("examId") Long examId,

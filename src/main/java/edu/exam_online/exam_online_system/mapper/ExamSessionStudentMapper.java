@@ -64,6 +64,7 @@ public interface ExamSessionStudentMapper {
                 .submittedAt(examSessionStudent.getSubmittedAt())
                 .teacherOverallFeedback(examSessionStudent.getTeacherOverallFeedback())
                 .questions(mapQuestions(examSessionStudent))
+                .exitCount(examSessionStudent.getExitCount())
                 .build();
     }
 

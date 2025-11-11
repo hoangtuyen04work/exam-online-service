@@ -274,8 +274,6 @@ public class ExamSessionStudentServiceImpl implements ExamSessionStudentService 
         examSessionStudentRepository.save(examSessionStudent);
     }
 
-
-
     private Float computeFallbackScore(ExamSessionStudent entity) {
         if (entity.getAnswers() == null || entity.getAnswers().isEmpty()) {
             return 0f;
