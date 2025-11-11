@@ -31,8 +31,8 @@ public interface ExamMapper {
 
     Exam toEntity(ExamImportRequest request);
 
-    @Mapping(target = "examId", source = "id")
-    ExamResponse toResponse(Exam exam);
+    @Mapping(target = "examId", source = "exam.id")
+    ExamResponse toResponse(Exam exam, Integer numberQuestions);
 
     @Mapping(source = "questionExams", target = "questions")
     ExamDetailResponse toExamDetailResponse(Exam exam);

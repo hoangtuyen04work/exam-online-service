@@ -21,6 +21,7 @@ public class ExamSessionStudentResultResponse {
     private Float totalScore;
     private ExamStudentStatusEnum status;
     private LocalDateTime submittedAt;
+    private Integer exitCount;
     private String teacherOverallFeedback;
     private List<QuestionResultResponse> questions;
 }

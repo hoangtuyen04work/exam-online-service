@@ -160,7 +160,7 @@ public class ExamServiceImpl implements ExamService {
 
         Page<Exam> exams = examRepository.findByTeacherIdOrderByCreatedAtDesc(teacherId, pageable);
 
-        return exams.map(examMapper::toResponse);
+        return exams.map(exam -> examMapper.toResponse(exam, exam.getQuestionExams().size()));
     }
 
     @Override
@@ -223,7 +223,7 @@ public class ExamServiceImpl implements ExamService {
                 .orElseThrow(() -> new AppException(ErrorCode.EXAM_NOT_FOUND));
 
         log.info("Fetched exam successfully: {}", exam.getId());
-        return examMapper.toResponse(exam);
+        return examMapper.toResponse(exam, exam.getQuestionExams().size());
     }
 
     @Override
@@ -250,7 +250,7 @@ public class ExamServiceImpl implements ExamService {
         Exam savedExam = examRepository.save(exam);
 
         log.info("create exam success, exam id: {}", savedExam.getId());
-        return examMapper.toResponse(savedExam);
+        return examMapper.toResponse(savedExam, exam.getQuestionExams().size());
     }
 
     private void updateAnswers(Question question, List<AnswerUpdateRequest> answerRequests, Long teacherId) {
