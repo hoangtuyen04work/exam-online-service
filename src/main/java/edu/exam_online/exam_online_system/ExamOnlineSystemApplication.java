@@ -9,7 +9,7 @@ import java.util.TimeZone;
 
 @SpringBootApplication
 @EnableWebSecurity
-@EnableJpaAuditing
+@EnableJpaAuditing(dateTimeProviderRef = "auditingDateTimeProvider")
 public class ExamOnlineSystemApplication {
 
 	public static void main(String[] args) {
