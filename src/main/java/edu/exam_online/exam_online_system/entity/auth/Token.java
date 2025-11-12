@@ -5,7 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.boot.actuate.audit.listener.AuditListener;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Builder
 @Entity
@@ -32,11 +32,11 @@ public class Token {
     private User user;
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
-    private LocalDateTime expiresAt;
+    private OffsetDateTime expiresAt;
 
-    private LocalDateTime refreshTokenExpiresAt;
+    private OffsetDateTime refreshTokenExpiresAt;
 
     @Column(name = "is_revoked", nullable = false)
     @Builder.Default

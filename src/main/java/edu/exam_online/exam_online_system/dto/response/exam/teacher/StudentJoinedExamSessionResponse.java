@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @NoArgsConstructor
@@ -17,6 +17,6 @@ public class StudentJoinedExamSessionResponse {
     private String studentName;
     private Long studentId;
     private ExamStudentStatusEnum status;
-    private LocalDateTime submittedAt;
+    private OffsetDateTime submittedAt;
     private float score;
 }

@@ -39,7 +39,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -189,7 +189,7 @@ public class ExamSessionStudentServiceImpl implements ExamSessionStudentService 
     }
 
     private JoinExamSessionResponse joinExam(ExamSession examSession, User student) {
-        LocalDateTime now = TimeUtils.getCurrentTime();
+        OffsetDateTime now = TimeUtils.getCurrentTime();
 
         if (now.isBefore(examSession.getStartAt())) {
             return examSessionStudentMapper.toResponse(examSession, NOT_OPEN);
@@ -206,7 +206,7 @@ public class ExamSessionStudentServiceImpl implements ExamSessionStudentService 
     }
 
     private void validateExamSession(ExamSession examSession) {
-        LocalDateTime now = TimeUtils.getCurrentTime();
+        OffsetDateTime now = TimeUtils.getCurrentTime();
         if(now.isBefore(examSession.getStartAt())){
             throw new AppException(ErrorCode.EXAM_NOT_YET_START);
         }

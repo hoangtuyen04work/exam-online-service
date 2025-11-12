@@ -8,7 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
@@ -81,10 +81,10 @@ public final class SecurityUtils {
     /**
      * Lấy thời điểm token được cấp (claim "iat").
      */
-    public static LocalDateTime getIssuedAt() {
+    public static OffsetDateTime getIssuedAt() {
         Object value = getJwtClaims().get("iat");
         if (value instanceof Number num) {
-            return LocalDateTime.ofInstant(Instant.ofEpochSecond(num.longValue()), ZoneOffset.UTC);
+            return OffsetDateTime.ofInstant(Instant.ofEpochSecond(num.longValue()), ZoneOffset.UTC);
         }
         return null;
     }
@@ -92,10 +92,10 @@ public final class SecurityUtils {
     /**
      * Lấy thời điểm token hết hạn (claim "exp").
      */
-    public static LocalDateTime getExpiresAt() {
+    public static OffsetDateTime getExpiresAt() {
         Object value = getJwtClaims().get("exp");
         if (value instanceof Number num) {
-            return LocalDateTime.ofInstant(Instant.ofEpochSecond(num.longValue()), ZoneOffset.UTC);
+            return OffsetDateTime.ofInstant(Instant.ofEpochSecond(num.longValue()), ZoneOffset.UTC);
         }
         return null;
     }
@@ -104,7 +104,7 @@ public final class SecurityUtils {
      * Kiểm tra token đã hết hạn chưa.
      */
     public static boolean isTokenExpired() {
-        LocalDateTime exp = getExpiresAt();
-        return exp != null && exp.isBefore(LocalDateTime.now(ZoneOffset.UTC));
+        OffsetDateTime exp = getExpiresAt();
+        return exp != null && exp.isBefore(OffsetDateTime.now(ZoneOffset.UTC));
     }
 }

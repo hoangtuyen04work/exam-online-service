@@ -13,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.time.OffsetDateTime;
+
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -22,10 +24,12 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
     CustomJwtDecoder customJwtDecoder;
     JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+//    CustomAuthenticationProvider customAuthenticationProvider;
 
     public SecurityConfig(CustomJwtDecoder customJwtDecoder, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
         this.customJwtDecoder = customJwtDecoder;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+//        this.customAuthenticationProvider = customAuthenticationProvider;
     }
 
     @Bean
@@ -52,6 +56,7 @@ public class SecurityConfig {
                         .requestMatchers("/public/**").permitAll()
                         .anyRequest().authenticated()
                 )
+//                .authenticationProvider(customAuthenticationProvider)
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwtConfigurer -> jwtConfigurer
                                 .decoder(customJwtDecoder)

@@ -27,7 +27,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,16 +64,16 @@ public class ExamSessionStudent {
 
     @Column(name = "started_at")
     @Builder.Default
-    private LocalDateTime startedAt = TimeUtils.getCurrentTime();
+    private OffsetDateTime startedAt = TimeUtils.getCurrentTime();
 
     @Column(name = "submitted_at")
-    private LocalDateTime submittedAt;
+    private OffsetDateTime submittedAt;
 
     @Column(name = "teacher_overall_feedback", columnDefinition = "TEXT")
     private String teacherOverallFeedback;
 
     @Column(name = "expired_at")
-    private LocalDateTime expiredAt;
+    private OffsetDateTime expiredAt;
 
     @Column(name = "exit_count")
     @Builder.Default
@@ -88,9 +88,9 @@ public class ExamSessionStudent {
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 }

@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @NoArgsConstructor
@@ -17,8 +17,8 @@ public class ExamSessionResponse {
     private String inviteLink;
     private String name;
     private String description;
-    private LocalDateTime expiredAt;
-    private LocalDateTime startAt;
+    private OffsetDateTime expiredAt;
+    private OffsetDateTime startAt;
     private String ownerName;
 }
 

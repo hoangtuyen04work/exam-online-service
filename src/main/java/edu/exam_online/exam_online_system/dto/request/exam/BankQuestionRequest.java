@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -17,5 +17,5 @@ public class BankQuestionRequest {
     private Long bankQuestionId;
     private String name;
     private String description;
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 }

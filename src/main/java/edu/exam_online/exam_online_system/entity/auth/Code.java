@@ -21,7 +21,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.boot.actuate.audit.listener.AuditListener;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "code")
@@ -45,9 +45,9 @@ public class Code {
     String code;
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
-    private LocalDateTime expiresAt;
+    private OffsetDateTime expiresAt;
 
     @Builder.Default
     private Boolean isUsed = false;

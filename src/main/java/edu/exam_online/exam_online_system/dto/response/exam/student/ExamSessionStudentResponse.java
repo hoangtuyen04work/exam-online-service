@@ -2,7 +2,7 @@ package edu.exam_online.exam_online_system.dto.response.exam.student;
 
 import edu.exam_online.exam_online_system.commons.constant.ExamStudentStatusEnum;
 import lombok.*;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -14,5 +14,5 @@ public class ExamSessionStudentResponse {
     private String examSessionName;
     private Float totalScore;       // có thể null nếu chưa có điểm
     private ExamStudentStatusEnum status;
-    private LocalDateTime submittedAt;
+    private OffsetDateTime submittedAt;
 }
