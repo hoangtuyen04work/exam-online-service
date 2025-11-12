@@ -10,6 +10,8 @@ spring:
       - optional:classpath:application-env.yaml
   application:
     name: exam-online-system
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
   mail:
     host: smtp.gmail.com
     port: 587
