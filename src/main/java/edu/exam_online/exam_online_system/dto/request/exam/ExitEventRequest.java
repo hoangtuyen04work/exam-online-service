@@ -1,6 +1,6 @@
 package edu.exam_online.exam_online_system.dto.request.exam;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -13,5 +13,5 @@ import lombok.Setter;
 public class ExitEventRequest {
     @NotNull(message = "Exam session student Id is required")
     private Long examSessionStudentId;
-    private LocalDateTime eventTime; // optional
+    private OffsetDateTime eventTime; // optional
 }

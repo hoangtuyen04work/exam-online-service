@@ -6,7 +6,7 @@ import edu.exam_online.exam_online_system.entity.auth.User;
 import edu.exam_online.exam_online_system.utils.TimeUtils;
 import org.mapstruct.Mapper;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {

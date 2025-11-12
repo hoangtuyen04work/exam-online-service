@@ -2,7 +2,7 @@ package edu.exam_online.exam_online_system.dto.response.exam.teacher;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Getter
@@ -16,7 +16,7 @@ public class ExamDetailResponse {
     private String description;
     private Integer totalPoint;
     private int durationMinutes;
-    private LocalDateTime timeStart;
-    private LocalDateTime timeEnd;
+    private OffsetDateTime timeStart;
+    private OffsetDateTime timeEnd;
     private List<QuestionResponse> questions;
 }

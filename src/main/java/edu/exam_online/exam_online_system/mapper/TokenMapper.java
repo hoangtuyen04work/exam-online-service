@@ -5,7 +5,7 @@ import edu.exam_online.exam_online_system.entity.auth.User;
 import org.mapstruct.Mapper;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 
 @Mapper(componentModel = "spring")
@@ -16,8 +16,8 @@ public interface TokenMapper {
                 .token(token)
                 .refreshToken(refreshToken)
                 .user(user)
-                .expiresAt(LocalDateTime.ofInstant(Instant.now().plusMillis(accessTokenExp), ZoneId.systemDefault()))
-                .refreshTokenExpiresAt(LocalDateTime.ofInstant(Instant.now().plusMillis(refreshTokenExp), ZoneId.systemDefault()))
+                .expiresAt(OffsetDateTime.ofInstant(Instant.now().plusMillis(accessTokenExp), ZoneId.systemDefault()))
+                .refreshTokenExpiresAt(OffsetDateTime.ofInstant(Instant.now().plusMillis(refreshTokenExp), ZoneId.systemDefault()))
                 .build();
     }
 }

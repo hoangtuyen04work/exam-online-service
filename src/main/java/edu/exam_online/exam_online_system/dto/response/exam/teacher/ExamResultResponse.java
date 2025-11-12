@@ -1,7 +1,7 @@
 package edu.exam_online.exam_online_system.dto.response.exam.teacher;
 
 import lombok.*;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -13,5 +13,5 @@ public class ExamResultResponse {
     private String studentName;
     private String examName;
     private double score;
-    private LocalDateTime submittedAt;
+    private OffsetDateTime submittedAt;
 }

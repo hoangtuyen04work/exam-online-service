@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Getter
@@ -14,5 +14,5 @@ public class BankQuestionResponse {
     private Long bankQuestionId;
     private String name;
     private String description;
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 }

@@ -5,7 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.boot.actuate.audit.listener.AuditListener;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 @EntityListeners(AuditListener.class)
 @Entity
 @Table(
@@ -32,5 +32,5 @@ public class RolePermission {
     private Permission permission;
 
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 }

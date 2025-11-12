@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Getter
@@ -20,7 +20,7 @@ public class ExamSessionStudentResultResponse {
     private String examSessionName;
     private Float totalScore;
     private ExamStudentStatusEnum status;
-    private LocalDateTime submittedAt;
+    private OffsetDateTime submittedAt;
     private Integer exitCount;
     private String teacherOverallFeedback;
     private List<QuestionResultResponse> questions;

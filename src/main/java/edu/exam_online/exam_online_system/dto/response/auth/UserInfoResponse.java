@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Set;
 
 @Data
@@ -23,9 +23,9 @@ public class UserInfoResponse {
     private String phone;
     private Boolean isActive;
     private Boolean isEmailVerified;
-    private LocalDateTime lastLogin;
+    private OffsetDateTime lastLogin;
     private Set<String> roles;
     private Set<String> permissions;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private OffsetDateTime createdAt;
+    private OffsetDateTime updatedAt;
 }

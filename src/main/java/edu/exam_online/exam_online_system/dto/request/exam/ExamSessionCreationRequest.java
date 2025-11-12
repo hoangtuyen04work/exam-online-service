@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -24,7 +24,7 @@ public class ExamSessionCreationRequest {
 
     private String description;
 
-    private LocalDateTime expiredAt;
+    private OffsetDateTime expiredAt;
 
-    private LocalDateTime startAt;
+    private OffsetDateTime startAt;
 }
