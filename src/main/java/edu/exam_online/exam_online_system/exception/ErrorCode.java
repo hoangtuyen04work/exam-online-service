@@ -15,6 +15,7 @@ public enum ErrorCode{
     USER_NOT_EXISTED(400, "User not found", HttpStatus.NOT_FOUND),
     WRONG_PASSWORD_OR_USERID(401, "Wrong password or user ID", HttpStatus.UNAUTHORIZED),
     NOT_AUTHENTICATION(401, "Not authenticated", HttpStatus.UNAUTHORIZED),
+    INVALID_JWT(401, "Invalid JWT", HttpStatus.UNAUTHORIZED),
     NOT_AUTHORIZATION(403, "Access denied", HttpStatus.FORBIDDEN),
     WRONG_VERIFICATION_CODE(400, "Wrong verification code", HttpStatus.BAD_REQUEST),
     VERIFICATION_CODE_EXPIRED(410, "Verification code expired", HttpStatus.GONE),

@@ -10,7 +10,12 @@ public class AuditorAwareImpl implements AuditorAware<Long> {
 
     @Override
     public Optional<Long> getCurrentAuditor() {
-        Long userId = SecurityUtils.getUserId();
-        return Optional.of(userId);
+        try{
+            Long userId = SecurityUtils.getUserId();
+            return Optional.of(userId);
+        }
+        catch (Exception e){
+            return Optional.empty();
+        }
     }
 }

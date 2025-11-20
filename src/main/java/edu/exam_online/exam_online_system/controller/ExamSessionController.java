@@ -6,11 +6,13 @@ import edu.exam_online.exam_online_system.dto.request.exam.ExamSessionCreationRe
 import edu.exam_online.exam_online_system.dto.request.exam.ExamSessionUpdateRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.TeacherOverallFeedBackRequest;
 import edu.exam_online.exam_online_system.dto.request.param.ExamSessionSearchParam;
+import edu.exam_online.exam_online_system.dto.request.websocket.StudentStatusResponse;
 import edu.exam_online.exam_online_system.dto.response.exam.student.result.ExamSessionStudentResultResponse;
 import edu.exam_online.exam_online_system.dto.response.exam.teacher.ExamSessionResponse;
 import edu.exam_online.exam_online_system.dto.response.exam.teacher.StudentJoinedExamSessionResponse;
 import edu.exam_online.exam_online_system.service.exam.ExamSessionService;
 import edu.exam_online.exam_online_system.service.exam.ExamSessionStudentService;
+import edu.exam_online.exam_online_system.service.monitoring.StudentMonitoringService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/teacher/exam-sessions")
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -35,6 +39,13 @@ public class ExamSessionController {
 
     ExamSessionService examSessionService;
     ExamSessionStudentService  examSessionStudentService;
+    StudentMonitoringService monitoringService;
+
+    @GetMapping("/monitoring/{examSessionId}")
+    @Operation(summary ="Get all exam session of a exam")
+    public BaseResponse<List<StudentStatusResponse>> getStudentParticipant(@PathVariable Long examSessionId){
+        return BaseResponse.success(monitoringService.getStudentParticipant(examSessionId));
+    }
 
     @PostMapping
     @Operation(summary ="Create new exam session")

@@ -3,7 +3,11 @@ server:
   port: 8888
   servlet:
     context-path: /exam-online-system
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 spring:
   config:
     import:
