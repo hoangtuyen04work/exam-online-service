@@ -45,6 +45,8 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/swagger-resources/**",
                                 "/webjars/**",
+                                "/actuator",
+                                "/actuator/**",
                                 "/api/auth/",
                                 "/api/auth/login",
                                 "/api/auth/refresh-token",
@@ -52,6 +54,7 @@ public class SecurityConfig {
                                 "/api/auth/register",
                                 "/api/roles"
                         ).permitAll()
+                        .requestMatchers("/ws/**").permitAll()
 
                         .requestMatchers("/public/**").permitAll()
                         .anyRequest().authenticated()

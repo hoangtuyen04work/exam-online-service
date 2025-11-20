@@ -4,6 +4,7 @@ import edu.exam_online.exam_online_system.commons.constant.ExamSessionStudentSta
 import edu.exam_online.exam_online_system.commons.constant.ExamStudentStatusEnum;
 import edu.exam_online.exam_online_system.dto.request.exam.TeacherFeedBackRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.TeacherOverallFeedBackRequest;
+import edu.exam_online.exam_online_system.dto.request.websocket.StudentStatusResponse;
 import edu.exam_online.exam_online_system.dto.response.exam.student.AnswerContentResponse;
 import edu.exam_online.exam_online_system.dto.response.exam.student.ExamSessionContentResponse;
 import edu.exam_online.exam_online_system.dto.response.exam.student.ExamSessionStudentResponse;
@@ -32,6 +33,14 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface ExamSessionStudentMapper {
 
+   default StudentStatusResponse toStudentStatusResponse(ExamSessionStudent examSessionStudent){
+        return StudentStatusResponse.builder()
+                .username(examSessionStudent.getStudent().getUsername())
+                .status(examSessionStudent.getStatus())
+                .userId(examSessionStudent.getStudent().getId())
+                .build();
+    }
+
     default void updateEntity(ExamSessionStudent examSessionStudent, TeacherOverallFeedBackRequest request){
         examSessionStudent.setTeacherOverallFeedback(request.getTeacherOverallFeedBack());
 
@@ -49,6 +58,7 @@ public interface ExamSessionStudentMapper {
                 .examSessionStudentId(examSessionStudent.getId())
                 .studentId(examSessionStudent.getStudent().getId())
                 .score(examSessionStudent.getTotalScore())
+                .exitCount(examSessionStudent.getExitCount())
                 .status(examSessionStudent.getStatus())
                 .submittedAt(examSessionStudent.getSubmittedAt() == null ? null : examSessionStudent.getSubmittedAt())
                 .studentName(examSessionStudent.getStudent().getUsername())
@@ -130,6 +140,9 @@ public interface ExamSessionStudentMapper {
         return ExamSessionContentResponse.builder()
                 .examSessionId(examSessionStudent.getExamSession().getId())
                 .status(status)
+                .startedAt(examSessionStudent.getStartedAt())
+                .expiredAt(examSessionStudent.getExpiredAt())
+                .durationMinutes(examSessionStudent.getExamSession().getDurationMinutes())
                 .name(examSessionStudent.getExamSession().getName())
                 .questions(toQuestionContentResponse(examSessionStudent.getAnswers()))
                 .build();
@@ -138,6 +151,9 @@ public interface ExamSessionStudentMapper {
     default ExamSessionContentResponse toNewResponse(ExamSessionStudent examSessionStudent){
         return ExamSessionContentResponse.builder()
                 .examSessionId(examSessionStudent.getExamSession().getId())
+                .startedAt(examSessionStudent.getStartedAt())
+                .expiredAt(examSessionStudent.getExpiredAt())
+                .durationMinutes(examSessionStudent.getExamSession().getDurationMinutes())
                 .name(examSessionStudent.getExamSession().getName())
                 .questions(toQuestionContentResponse(examSessionStudent.getAnswers()))
                 .build();

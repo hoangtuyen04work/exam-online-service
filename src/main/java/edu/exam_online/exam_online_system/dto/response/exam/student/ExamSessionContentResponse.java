@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Getter
@@ -15,5 +16,8 @@ public class ExamSessionContentResponse {
     private ExamStudentStatusEnum status = ExamStudentStatusEnum.IN_PROGRESS;
     private Long examSessionId;
     private String name;
+    private OffsetDateTime  startedAt;
+    private OffsetDateTime expiredAt;
+    private Integer durationMinutes;
     private List<QuestionContentResponse> questions;
 }

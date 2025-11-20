@@ -50,6 +50,19 @@ public class TokenUtils {
     }
 
     /**
+     * Get userId from token
+     */
+    public Long getUserId(String token){
+        try{
+            SignedJWT signedJWT = SignedJWT.parse(token);
+            return Long.parseLong(signedJWT.getJWTClaimsSet().getSubject());
+        }
+        catch (Exception e){
+            throw new AppException(ErrorCode.NOT_AUTHENTICATION);
+        }
+    }
+
+    /**
      * Sinh Access Token
      */
     public String generateToken(User user) {

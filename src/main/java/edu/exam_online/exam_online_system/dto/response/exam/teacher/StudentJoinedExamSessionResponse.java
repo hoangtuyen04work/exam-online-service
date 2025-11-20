@@ -18,5 +18,6 @@ public class StudentJoinedExamSessionResponse {
     private Long studentId;
     private ExamStudentStatusEnum status;
     private OffsetDateTime submittedAt;
+    private Integer exitCount;
     private float score;
 }
