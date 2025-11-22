@@ -80,7 +80,8 @@ public class ExamSessionStudent {
     private Integer exitCount = 0;
 
     @Column(name = "total_score")
-    private Float totalScore;
+    @Builder.Default
+    private Float totalScore = 0F;
 
     @CreatedBy
     @Column(name = "created_by", nullable = false)

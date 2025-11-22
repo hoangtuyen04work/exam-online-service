@@ -125,7 +125,7 @@ public interface ExamSessionStudentMapper {
         return ExamSessionStudent.builder()
                 .examSession(examSession)
                 .student(student)
-                .expiredAt(TimeUtils.getCurrentTime().plusMinutes(durationMinutes))
+                .expiredAt(TimeUtils.getCurrentTime().plusMinutes(durationMinutes).isAfter(examSession.getExpiredAt()) ? examSession.getExpiredAt() : TimeUtils.getCurrentTime().plusMinutes(durationMinutes))
                 .build();
     }
 
@@ -138,6 +138,7 @@ public interface ExamSessionStudentMapper {
 
     default ExamSessionContentResponse toDraftResponse(ExamSessionStudent examSessionStudent, ExamStudentStatusEnum status){
         return ExamSessionContentResponse.builder()
+                .examSessionStudentId(examSessionStudent.getId())
                 .examSessionId(examSessionStudent.getExamSession().getId())
                 .status(status)
                 .startedAt(examSessionStudent.getStartedAt())
@@ -150,6 +151,7 @@ public interface ExamSessionStudentMapper {
 
     default ExamSessionContentResponse toNewResponse(ExamSessionStudent examSessionStudent){
         return ExamSessionContentResponse.builder()
+                .examSessionStudentId(examSessionStudent.getId())
                 .examSessionId(examSessionStudent.getExamSession().getId())
                 .startedAt(examSessionStudent.getStartedAt())
                 .expiredAt(examSessionStudent.getExpiredAt())

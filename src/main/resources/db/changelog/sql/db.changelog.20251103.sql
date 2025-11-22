@@ -16,3 +16,6 @@ ALTER TABLE exam_session_students
 -- changeset tuyen_hh:1760057000000
 SET GLOBAL time_zone = '+07:00';
 
+-- changeset tuyen_hh:1760067000000
+ALTER TABLE exam_session_students
+    ALTER COLUMN total_score SET DEFAULT 0;

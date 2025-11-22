@@ -9,5 +9,6 @@ import lombok.Setter;
 @Builder
 public class StudentEventBroadcast {
     private Long userId;
+    private String username;
     private StudentEvent event;
 }
