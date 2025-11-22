@@ -15,6 +15,7 @@ public class ExamSessionContentResponse {
     @Builder.Default
     private ExamStudentStatusEnum status = ExamStudentStatusEnum.IN_PROGRESS;
     private Long examSessionId;
+    private Long examSessionStudentId;
     private String name;
     private OffsetDateTime  startedAt;
     private OffsetDateTime expiredAt;

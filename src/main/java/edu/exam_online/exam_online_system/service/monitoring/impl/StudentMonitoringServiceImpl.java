@@ -3,8 +3,12 @@ package edu.exam_online.exam_online_system.service.monitoring.impl;
 
 import edu.exam_online.exam_online_system.dto.request.websocket.StudentEvent;
 import edu.exam_online.exam_online_system.dto.request.websocket.StudentStatusResponse;
+import edu.exam_online.exam_online_system.entity.auth.User;
 import edu.exam_online.exam_online_system.entity.exam.ExamSessionStudent;
+import edu.exam_online.exam_online_system.exception.AppException;
+import edu.exam_online.exam_online_system.exception.ErrorCode;
 import edu.exam_online.exam_online_system.mapper.ExamSessionStudentMapper;
+import edu.exam_online.exam_online_system.repository.auth.UserRepository;
 import edu.exam_online.exam_online_system.repository.exam.ExamSessionRepository;
 import edu.exam_online.exam_online_system.repository.exam.ExamSessionStudentRepository;
 import edu.exam_online.exam_online_system.service.monitoring.StudentMonitoringService;
@@ -25,6 +29,7 @@ public class StudentMonitoringServiceImpl implements StudentMonitoringService {
 
     ExamSessionRepository examSessionRepository;
     ExamSessionStudentRepository examSessionStudentRepository;
+    UserRepository userRepository;
 
     ExamSessionStudentMapper examSessionStudentMapper;
 
@@ -37,23 +42,19 @@ public class StudentMonitoringServiceImpl implements StudentMonitoringService {
     }
 
     @Override
-    public void handleStudentEvent(Principal principal, StudentEvent event, String sessionId){
-//        String username = principal.getName();  // username từ JWT hoặc session
-//
-//        // 1) Validate input
-//        if (event.getExamId() == null) {
-//            return; // hoặc throw error
-//        }
-//
-//        // 2) Kiểm tra xem user có quyền gửi event cho exam đó không
-//        // (tùy hệ thống bạn implement)
-//        if (!examMonitorService.isStudentInExam(username, event.getExamId())) {
-//            System.out.println("INVALID ACCESS from user: " + username);
-//            return;
-//        }
-//
-//        // 3) Lưu event (để sau xem lại hành vi học sinh)
-//        examMonitorService.saveEvent(username, event.getExamId(), event.getType(), event.getPayload());
+    public User handleStudentEvent(Principal principal, StudentEvent event, String sessionId){
+        Long userId = Long.parseLong(principal.getName());
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
+        if (event.getExamSessionId() == null) {
+            throw new AppException(ErrorCode.EXAM_SESSION_NOT_FOUND);
+        }
+
+        if (!examSessionStudentRepository.existsByExamSessionIdAndStudentId(event.getExamSessionId(), userId)) {
+            throw new AppException(ErrorCode.CAN_NOT_SEND_MESSAGE);
+        }
+
+        return user;
     }
 }
