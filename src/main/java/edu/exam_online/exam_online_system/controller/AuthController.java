@@ -28,6 +28,7 @@ public class AuthController {
 
     AuthService authService;
 
+
     @PostMapping("/verify-email")
     public BaseResponse<Boolean> verifyEmail(@RequestBody @Valid VerifyRegisterRequest request) throws AppException {
         return BaseResponse.success(authService.verifyEmail(request));

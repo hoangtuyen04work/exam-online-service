@@ -10,5 +10,7 @@ public class CustomClaimNames {
     public static final String IDENTITY_PROVIDER = "identity_provider";
     public static final String SSID = "ssid";
     public static final String GRANT_TYPE = "grant_type";
+    public static final String EMAIL = "email";
+    public static final String NAME = "name";
 
 }

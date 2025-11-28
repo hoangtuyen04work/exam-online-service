@@ -10,5 +10,4 @@ public enum StudentEventEnum {
     LEAVE,
     FOCUS_LOST,
     SUBMIT
-    // "ENTER", "LEAVE", "FOCUS_LOST", "SUBMIT", ...
 }

@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static edu.exam_online.exam_online_system.commons.constant.ExamStudentStatusEnum.IN_PROGRESS;
+
 @Mapper(componentModel = "spring")
 public interface ExamSessionStudentMapper {
 
@@ -37,6 +39,7 @@ public interface ExamSessionStudentMapper {
         return StudentStatusResponse.builder()
                 .username(examSessionStudent.getStudent().getUsername())
                 .status(examSessionStudent.getStatus())
+                .timestamp(examSessionStudent.getStatus() == IN_PROGRESS ? examSessionStudent.getStartedAt() : examSessionStudent.getSubmittedAt())
                 .userId(examSessionStudent.getStudent().getId())
                 .build();
     }
@@ -162,7 +165,13 @@ public interface ExamSessionStudentMapper {
     }
 
     default List<QuestionContentResponse> toQuestionContentResponse(List<ExamSessionStudentAnswer> answers){
-        return answers.stream().map(this::toQuestionContentResponse).toList();
+        List<QuestionContentResponse> responses = answers.stream()
+                .map(this::toQuestionContentResponse)
+                .collect(Collectors.toList());
+
+        Collections.shuffle(responses);
+        return responses;
+
     }
 
     default QuestionContentResponse toQuestionContentResponse(ExamSessionStudentAnswer answer){
@@ -183,6 +192,7 @@ public interface ExamSessionStudentMapper {
                     .build();
             response.add(a);
         });
+        Collections.shuffle(response);
         return response;
     }
 
