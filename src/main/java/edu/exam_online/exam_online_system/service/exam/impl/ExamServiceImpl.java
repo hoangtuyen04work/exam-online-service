@@ -30,10 +30,8 @@ import edu.exam_online.exam_online_system.repository.exam.ExamRepository;
 import edu.exam_online.exam_online_system.repository.exam.QuestionRepository;
 import edu.exam_online.exam_online_system.service.exam.ExamService;
 import edu.exam_online.exam_online_system.utils.SecurityUtils;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +61,6 @@ public class ExamServiceImpl implements ExamService {
     QuestionMapper questionMapper;
     AnswerMapper answerMapper;
     QuestionExamMapper questionExamMapper;
-    RedisTemplate<String, Object> redisTemplate;
 
     @Override
     @Transactional
