@@ -1,6 +1,7 @@
 package edu.exam_online.exam_online_system.service.exam;
 
 import edu.exam_online.exam_online_system.dto.request.exam.BankQuestionCreationRequest;
+import edu.exam_online.exam_online_system.dto.request.exam.BankQuestionSearchParam;
 import edu.exam_online.exam_online_system.dto.response.exam.teacher.BankQuestionDetailResponse;
 import edu.exam_online.exam_online_system.dto.response.exam.teacher.BankQuestionResponse;
 import org.springframework.data.domain.Page;
@@ -11,7 +12,7 @@ public interface BankQuestionService {
 
     BankQuestionDetailResponse getById(Long bankQuestionId);
 
-    Page<BankQuestionResponse> searchBankQuestion(Pageable pageable);
+    Page<BankQuestionResponse> searchBankQuestion(BankQuestionSearchParam param, Pageable pageable);
 
     void createBankQuestion(BankQuestionCreationRequest request);
 }

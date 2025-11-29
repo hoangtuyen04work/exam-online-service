@@ -1,6 +1,7 @@
 package edu.exam_online.exam_online_system.service.exam.impl;
 
 import edu.exam_online.exam_online_system.dto.request.exam.BankQuestionCreationRequest;
+import edu.exam_online.exam_online_system.dto.request.exam.BankQuestionSearchParam;
 import edu.exam_online.exam_online_system.dto.request.exam.QuestionCreationRequest;
 import edu.exam_online.exam_online_system.dto.response.exam.teacher.BankQuestionDetailResponse;
 import edu.exam_online.exam_online_system.dto.response.exam.teacher.BankQuestionResponse;
@@ -57,10 +58,10 @@ public class BankQuestionServiceImpl implements BankQuestionService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<BankQuestionResponse> searchBankQuestion(Pageable pageable){
+    public Page<BankQuestionResponse> searchBankQuestion(BankQuestionSearchParam param, Pageable pageable){
         Long userId = SecurityUtils.getUserId();
 
-        Page<BankQuestion> bankQuestions = bankQuestionRepository.findByTeacherIdOrderByCreatedAtDesc(userId, pageable);
+        Page<BankQuestion> bankQuestions = bankQuestionRepository.search(userId, param.getName(), pageable);
         return bankQuestions.map(bankQuestionMapper::toResponse);
     }
 
