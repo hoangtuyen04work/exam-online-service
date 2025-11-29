@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public enum ErrorCode{
+public enum ErrorCode {
     // ===== USER =====
     REFRESH_TOKEN_FALSE(401, "Refresh token failed", HttpStatus.UNAUTHORIZED),
     REFRESH_TOKEN_INVALID(401, "Refresh token invalid", HttpStatus.UNAUTHORIZED),
@@ -45,14 +45,15 @@ public enum ErrorCode{
     EXAM_SESSION_STUDENT_NOT_FOUND(400, "Exam session student not found", HttpStatus.BAD_REQUEST),
     BANK_QUESTION_NOT_FOUND(400, "Bank question not found", HttpStatus.NOT_FOUND),
     CAN_NOT_SEND_MESSAGE(400, "Can not send message", HttpStatus.BAD_REQUEST),
-    QUESTION_NOT_FOUND(400, "Question not found", HttpStatus.NOT_FOUND);
+    QUESTION_NOT_FOUND(400, "Question not found", HttpStatus.NOT_FOUND),
+    ANSWER_NOT_FOUND(400, "Answer not found", HttpStatus.NOT_FOUND);
 
     @Getter
     int status;
     String message;
     HttpStatus httpStatus;
 
-    ErrorCode(int status, String message,HttpStatus httpStatus){
+    ErrorCode(int status, String message, HttpStatus httpStatus) {
         this.status = status;
         this.message = message;
         this.httpStatus = httpStatus;
