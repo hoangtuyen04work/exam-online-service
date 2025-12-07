@@ -14,6 +14,8 @@ import java.util.Optional;
 @Repository
 public interface ExamSessionRepository extends JpaRepository<ExamSession, Long> {
 
+    List<ExamSession> findAllByIdInAndOwnerId(List<Long> ids, Long ownerId);
+
     @Query("SELECT e FROM ExamSession e WHERE e.code = :code")
     Optional<ExamSession> findByCode(@Param("code") String code);
 

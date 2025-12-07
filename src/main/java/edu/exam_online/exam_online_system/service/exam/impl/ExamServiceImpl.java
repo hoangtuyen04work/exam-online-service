@@ -3,6 +3,7 @@ package edu.exam_online.exam_online_system.service.exam.impl;
 import edu.exam_online.exam_online_system.dto.request.exam.AnswerUpdateRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamBankQuestionCreationRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamCreationRequest;
+import edu.exam_online.exam_online_system.dto.request.exam.ExamQuestionLevelRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamUpdateQuestionsRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.QuestionCreationRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.QuestionUpdateRequest;
@@ -39,7 +40,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -72,12 +72,13 @@ public class ExamServiceImpl implements ExamService {
         BankQuestion bankQuestion = bankQuestionRepository.findByIdAndTeacherId(request.getBankQuestionId(), userId)
                 .orElseThrow(() -> new AppException(ErrorCode.BANK_QUESTION_NOT_FOUND));
 
-        List<Question> questions = bankQuestion.getQuestions();
-        Collections.shuffle(questions);
+        List<Question> questions = new ArrayList<>();
+        request.getQuestionLevels().forEach(questionLevelRequest -> {
+            questions.addAll(getQuestions(bankQuestion.getId(), questionLevelRequest));
+        });
 
-        List<Question> questionShuffles = questions.stream().limit(request.getNumber()).toList();
         Exam exam = examMapper.toEntity(request);
-        List<QuestionExam> questionExams =  questionShuffles.stream()
+        List<QuestionExam> questionExams =  questions.stream()
                 .map(question -> questionExamMapper.toEntity(exam, question)).toList();
         questionExams.forEach(questionExam -> questionExam.setExam(exam));
         exam.setQuestionExams(questionExams);
@@ -380,5 +381,9 @@ public class ExamServiceImpl implements ExamService {
         question.getAnswers().addAll(newAnswers);
 
         answers.addAll(newAnswers);
+    }
+
+    private List<Question> getQuestions(Long bankQuestionId, ExamQuestionLevelRequest request){
+        return questionRepository.findByBankQuestionId(bankQuestionId, request.getDifficulty(), request.getQuantity());
     }
 }

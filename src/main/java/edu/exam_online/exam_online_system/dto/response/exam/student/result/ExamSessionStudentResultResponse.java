@@ -24,4 +24,6 @@ public class ExamSessionStudentResultResponse {
     private Integer exitCount;
     private String teacherOverallFeedback;
     private List<QuestionResultResponse> questions;
+    private Double passingScore;
+    private Boolean isPassed; // true if totalScore >= passingScore
 }

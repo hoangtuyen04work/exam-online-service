@@ -1,8 +1,6 @@
 package edu.exam_online.exam_online_system.entity.exam;
 
 import edu.exam_online.exam_online_system.commons.constant.ExamSessionStudentStateEnum;
-import edu.exam_online.exam_online_system.commons.constant.ExamStudentStatusEnum;
-import edu.exam_online.exam_online_system.commons.constant.ExamSubmitStateEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -49,12 +47,12 @@ public class ExamSessionStudentAnswer {
     private ExamSessionStudent examSessionStudent;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id", nullable = false)
-    private Question question;
+    @JoinColumn(name = "exam_session_question_snapshot_id", nullable = false)
+    private ExamSessionQuestionSnapshot examSessionQuestionSnapshot;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "answer_id")
-    private Answer selectedAnswer;
+    @JoinColumn(name = "exam_session_answer_snapshot_id")
+    private ExamSessionAnswerSnapshot selectedAnswerSnapshot;
 
     @Column(name = "teacher_feedback", columnDefinition = "TEXT")
     private String teacherFeedback;

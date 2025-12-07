@@ -1,17 +1,19 @@
-server:
-  address: 0.0.0.0
-  port: 8888
-  servlet:
-    context-path: /exam-online-system
 management:
   endpoints:
     web:
       exposure:
         include: "*"
+
+server:
+  address: 0.0.0.0
+  port: 8888
+  servlet:
+    context-path: /exam-online-system
+
 spring:
   config:
     import:
-      - optional:classpath:application-env.yaml
+      - optional:classpath:application-local.yaml
   application:
     name: exam-online-system
   jackson:
@@ -19,8 +21,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: hoanghuutuyen06022004@gmail.com
-    password: ctrw zreb qvdy vccx
+    username: "${EMAIL:}"
+    password: "${EMAIL_PASSWORD:}"
     properties:
       mail:
         smtp:
@@ -33,9 +35,9 @@ spring:
 #    url: ${URL:jdbc:mysql://localhost:3306/exam_online_system?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
 #    username: ${USERNAME:root}
 #    password: ${PASSWORD:123}
-    url: jdbc:mysql://localhost:3306/exam_online_system?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: root
-    password: 123
+    url: "${URL:jdbc:mysql://localhost:3306/exam_online_system?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}"
+    username: "${DB_USERNAME:root}"
+    password: "${DB_PASSWORD:123}"
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -51,8 +53,8 @@ spring:
       client:
         registration:
           azure:
-            client-id: ${AZURE_CLIENT_ID:5e8fd1e6-5c31-4b10-873a-c0cbb2565f02}
-            client-secret: ${AZURE_CLIENT_SECRET:t3y8Q~RqbY.QtUlSYVdMz53x6GVHVOU3l5Gq1bXV}
+            client-id: ${AZURE_CLIENT_ID}
+            client-secret: ${AZURE_CLIENT_SECRET}
             scope:
               - openid
               - profile
@@ -62,15 +64,16 @@ spring:
             authorization-grant-type: authorization_code
         provider:
           azure:
-            issuer-uri: https://login.microsoftonline.com/${AZURE_TENANT_ID:0aa16d8a-a396-4e21-aa14-2a68a45786bc}/v2.0
+            issuer-uri: https://login.microsoftonline.com/${AZURE_TENANT_ID}/v2.0
 
 
 jwt:
-  secret: ${JWT_SECRET:18x30Q0l4Sdr783UnbNl6drrmqSobLJB}
-  expiration: ${JWT_EXPIRATION:86400000}
+  secret: "${JWT_SECRET:}"
+  expiration: "${JWT_EXPIRATION:}"
 
 logging:
   level:
     com.azure.spring: DEBUG
     org.springframework.security: DEBUG
     edu.exam_online.exam_online_system: DEBUG
+origin: "${ORIGIN:http://localhost:3000}"

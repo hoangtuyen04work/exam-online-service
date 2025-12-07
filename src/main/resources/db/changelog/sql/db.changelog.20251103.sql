@@ -6,7 +6,7 @@ ALTER TABLE exam_session_students
     ADD COLUMN teacher_overall_feedback TEXT AFTER submitted_at;
 
 ALTER TABLE exam_session_student_answers
-    ADD COLUMN teacher_feedback TEXT AFTER answer_id;
+    ADD COLUMN teacher_feedback TEXT AFTER exam_session_student_id;
 
 -- changeset tuyen_hh:1760056000000
 ALTER TABLE exam_session_students

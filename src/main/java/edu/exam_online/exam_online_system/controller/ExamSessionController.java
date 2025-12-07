@@ -9,6 +9,7 @@ import edu.exam_online.exam_online_system.dto.request.param.ExamSessionSearchPar
 import edu.exam_online.exam_online_system.dto.request.websocket.StudentStatusResponse;
 import edu.exam_online.exam_online_system.dto.response.exam.student.result.ExamSessionStudentResultResponse;
 import edu.exam_online.exam_online_system.dto.response.exam.teacher.ExamSessionResponse;
+import edu.exam_online.exam_online_system.dto.response.exam.teacher.ExamSessionStatisticsResponse;
 import edu.exam_online.exam_online_system.dto.response.exam.teacher.StudentJoinedExamSessionResponse;
 import edu.exam_online.exam_online_system.service.exam.ExamSessionService;
 import edu.exam_online.exam_online_system.service.exam.ExamSessionStudentService;
@@ -95,5 +96,19 @@ public class ExamSessionController {
     public BaseResponse<Void> createFeedBack(@PathVariable Long examSessionStudentId, @RequestBody TeacherOverallFeedBackRequest request){
         examSessionStudentService.teacherFeedBack(examSessionStudentId, request);
         return BaseResponse.success();
+    }
+
+    @PutMapping("/{examSessionId}/passing-score")
+    @Operation(summary = "Update passing score for exam session")
+    public BaseResponse<ExamSessionResponse> updatePassingScore(
+            @PathVariable Long examSessionId, 
+            @RequestBody edu.exam_online.exam_online_system.dto.request.exam.UpdatePassingScoreRequest request) {
+        return BaseResponse.success(examSessionService.updatePassingScore(examSessionId, request.getPassingScore()));
+    }
+
+    @GetMapping("/{examSessionId}/statistics")
+    @Operation(summary = "Get statistics for exam session")
+    public BaseResponse<ExamSessionStatisticsResponse> getExamSessionStatistics(@PathVariable Long examSessionId) {
+        return BaseResponse.success(examSessionService.getExamSessionStatistics(examSessionId));
     }
 }

@@ -2,15 +2,12 @@ package edu.exam_online.exam_online_system.service.exam;
 
 import edu.exam_online.exam_online_system.dto.request.exam.ExamBankQuestionCreationRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamCreationRequest;
-import edu.exam_online.exam_online_system.dto.request.exam.ExamImportRequest;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamUpdateQuestionsRequest;
 import edu.exam_online.exam_online_system.dto.response.exam.teacher.ExamDetailResponse;
 import edu.exam_online.exam_online_system.dto.response.exam.teacher.ExamResponse;
 import edu.exam_online.exam_online_system.dto.request.exam.ExamUpdateRequest;
-import edu.exam_online.exam_online_system.dto.response.exam.teacher.ImportResultResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
 public interface ExamService {
 

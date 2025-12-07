@@ -41,17 +41,12 @@ CREATE TABLE exam_session_student_answers
 (
     id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     exam_session_student_id BIGINT NOT NULL,
-    question_id BIGINT NOT NULL,
-    answer_id BIGINT NULL,
     state ENUM('NOT_OPEN', 'OPENING', 'CLOSED') NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_ess_answers_session_student FOREIGN KEY (exam_session_student_id) REFERENCES exam_session_students (id) ON DELETE CASCADE,
-    CONSTRAINT fk_ess_answers_question FOREIGN KEY (question_id) REFERENCES questions (id) ON DELETE CASCADE,
-    CONSTRAINT fk_ess_answers_answer FOREIGN KEY (answer_id) REFERENCES answers (id) ON DELETE SET NULL
+    CONSTRAINT fk_ess_answers_session_student FOREIGN KEY (exam_session_student_id) REFERENCES exam_session_students (id) ON DELETE CASCADE
 );
 
 CREATE INDEX idx_exam_sessions_time ON exam_sessions (start_at, expired_at);
 CREATE INDEX idx_exam_session_students_status ON exam_session_students (exam_session_id, status);
 CREATE INDEX idx_ess_answers_session ON exam_session_student_answers (exam_session_student_id);
-CREATE INDEX idx_ess_answers_question ON exam_session_student_answers (question_id);
