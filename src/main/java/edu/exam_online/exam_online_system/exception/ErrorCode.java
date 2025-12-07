@@ -46,7 +46,14 @@ public enum ErrorCode{
     BANK_QUESTION_NOT_FOUND(400, "Bank question not found", HttpStatus.NOT_FOUND),
     CAN_NOT_SEND_MESSAGE(400, "Can not send message", HttpStatus.BAD_REQUEST),
     ANSWER_NOT_FOUND(400, "Answer not found", HttpStatus.NOT_FOUND),
-    QUESTION_NOT_FOUND(400, "Question not found", HttpStatus.NOT_FOUND);
+    QUESTION_NOT_FOUND(400, "Question not found", HttpStatus.NOT_FOUND),
+
+    // ====== CLASS ========
+    CLASS_NOT_FOUND(400, "Class not found", HttpStatus.NOT_FOUND),
+    EXAM_SESSION_NOT_IN_CLASS(400, "Exam session not int class", HttpStatus.NOT_FOUND),
+    STUDENT_NOT_IN_CLASS(400, "Student not in class", HttpStatus.NOT_FOUND),
+    STUDENT_ALREADY_IN_CLASS(400, "Student already in class", HttpStatus.BAD_REQUEST),
+    EXAM_SESSION_SNAPSHOT_NOT_FOUND(400, "Exam session snapshot not found", HttpStatus.NOT_FOUND),;
 
     @Getter
     int status;
