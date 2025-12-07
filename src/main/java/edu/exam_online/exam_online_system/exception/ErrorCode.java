@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public enum ErrorCode {
+public enum ErrorCode{
     // ===== USER =====
     REFRESH_TOKEN_FALSE(401, "Refresh token failed", HttpStatus.UNAUTHORIZED),
     REFRESH_TOKEN_INVALID(401, "Refresh token invalid", HttpStatus.UNAUTHORIZED),
@@ -45,24 +45,15 @@ public enum ErrorCode {
     EXAM_SESSION_STUDENT_NOT_FOUND(400, "Exam session student not found", HttpStatus.BAD_REQUEST),
     BANK_QUESTION_NOT_FOUND(400, "Bank question not found", HttpStatus.NOT_FOUND),
     CAN_NOT_SEND_MESSAGE(400, "Can not send message", HttpStatus.BAD_REQUEST),
-    QUESTION_NOT_FOUND(400, "Question not found", HttpStatus.NOT_FOUND),
-    EXAM_SESSION_SNAPSHOT_NOT_FOUND(400, "Exam session snapshot not found", HttpStatus.BAD_REQUEST),
-
-    // ====== CLASS ========
-    CLASS_NOT_FOUND(404, "Class not found", HttpStatus.NOT_FOUND),
-    CLASS_CODE_ALREADY_EXISTS(409, "Class code already exists", HttpStatus.CONFLICT),
-    CLASS_UNAUTHORIZED(403, "You are not authorized to access this class", HttpStatus.FORBIDDEN),
-    STUDENT_ALREADY_IN_CLASS(409, "Student already enrolled in this class", HttpStatus.CONFLICT),
-    STUDENT_NOT_IN_CLASS(404, "Student not found in this class", HttpStatus.NOT_FOUND),
-    EXAM_SESSION_ALREADY_IN_CLASS(409, "Exam session already assigned to this class", HttpStatus.CONFLICT),
-    EXAM_SESSION_NOT_IN_CLASS(404, "Exam session not found in this class", HttpStatus.NOT_FOUND);
+    ANSWER_NOT_FOUND(400, "Answer not found", HttpStatus.NOT_FOUND),
+    QUESTION_NOT_FOUND(400, "Question not found", HttpStatus.NOT_FOUND);
 
     @Getter
     int status;
     String message;
     HttpStatus httpStatus;
 
-    ErrorCode(int status, String message, HttpStatus httpStatus) {
+    ErrorCode(int status, String message,HttpStatus httpStatus){
         this.status = status;
         this.message = message;
         this.httpStatus = httpStatus;
