@@ -67,11 +67,18 @@ public class ExamSession {
     private List<ExamSessionStudent> examSessionStudents = new ArrayList<>();
 
     @Builder.Default
+    @OneToMany(mappedBy = "examSession", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ExamSessionQuestionSnapshot> examSessionQuestionSnapshots = new ArrayList<>();
+
+    @Builder.Default
     @Column(name = "start_at")
     private OffsetDateTime startAt = TimeUtils.getCurrentTime();
 
     @Column(name = "expired_at")
     private OffsetDateTime expiredAt;
+
+    @Column(name = "passing_score")
+    private Double passingScore;
 
     @CreatedBy
     @Column(name = "created_by", nullable = false)

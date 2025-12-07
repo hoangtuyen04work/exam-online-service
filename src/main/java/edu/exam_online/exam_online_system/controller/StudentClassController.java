@@ -34,4 +34,10 @@ public class StudentClassController {
     public BaseResponse<StudentClassDetailResponse> getClassDetail(@PathVariable Long classId) {
         return BaseResponse.success(studentClassService.getClassDetail(classId));
     }
+
+    @PostMapping("/join")
+    @Operation(summary = "Join class by code", description = "Student joins a class using class code")
+    public BaseResponse<StudentClassResponse> joinClassByCode(@RequestParam String classCode) {
+        return BaseResponse.success(studentClassService.joinClassByCode(classCode));
+    }
 }

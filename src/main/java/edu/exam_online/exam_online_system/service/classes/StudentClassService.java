@@ -6,8 +6,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface StudentClassService {
-    
+
     Page<StudentClassResponse> getMyClasses(Pageable pageable);
-    
+
     StudentClassDetailResponse getClassDetail(Long classId);
+
+    StudentClassResponse joinClassByCode(String classCode);
 }

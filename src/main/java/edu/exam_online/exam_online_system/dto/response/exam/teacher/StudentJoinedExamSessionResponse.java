@@ -20,4 +20,5 @@ public class StudentJoinedExamSessionResponse {
     private OffsetDateTime submittedAt;
     private Integer exitCount;
     private float score;
+    private Boolean isPassed; // true if score >= passingScore
 }

@@ -45,6 +45,10 @@ public class Class {
     @Builder.Default
     private Boolean isActive = true;
 
+    @Column(name = "allow_student_chat", nullable = false)
+    @Builder.Default
+    private Boolean allowStudentChat = true;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id", nullable = false)
     private User teacher;

@@ -27,4 +27,7 @@ public class ExamSessionCreationRequest {
     private OffsetDateTime expiredAt;
 
     private OffsetDateTime startAt;
+
+    @Min(value = 0, message = "Passing score must be greater than or equal to 0")
+    private Double passingScore;
 }

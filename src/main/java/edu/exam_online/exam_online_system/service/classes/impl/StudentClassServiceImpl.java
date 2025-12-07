@@ -2,10 +2,12 @@ package edu.exam_online.exam_online_system.service.classes.impl;
 
 import edu.exam_online.exam_online_system.dto.response.classes.StudentClassDetailResponse;
 import edu.exam_online.exam_online_system.dto.response.classes.StudentClassResponse;
+import edu.exam_online.exam_online_system.entity.auth.User;
 import edu.exam_online.exam_online_system.entity.classes.Class;
 import edu.exam_online.exam_online_system.entity.classes.ClassStudent;
 import edu.exam_online.exam_online_system.exception.AppException;
 import edu.exam_online.exam_online_system.exception.ErrorCode;
+import edu.exam_online.exam_online_system.repository.auth.UserRepository;
 import edu.exam_online.exam_online_system.repository.classes.ClassRepository;
 import edu.exam_online.exam_online_system.repository.classes.ClassStudentRepository;
 import edu.exam_online.exam_online_system.service.classes.StudentClassService;
@@ -29,6 +31,7 @@ public class StudentClassServiceImpl implements StudentClassService {
 
     ClassStudentRepository classStudentRepository;
     ClassRepository classRepository;
+    UserRepository userRepository;
 
     static String WEB_DOMAIN = "http://localhost:3000/exam/";
 
@@ -102,7 +105,35 @@ public class StudentClassServiceImpl implements StudentClassService {
                 .build();
     }
 
-    private String generateInviteExamSession(String code){
-        return WEB_DOMAIN +"join/" + code;
+    @Override
+    @Transactional
+    public StudentClassResponse joinClassByCode(String classCode) {
+        log.info("Student joining class with code: {}", classCode);
+
+        Long studentId = SecurityUtils.getUserId();
+        User user = userRepository.findById(studentId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        // Find class by code
+        Class classEntity = classRepository.findByClassCode(classCode)
+                .orElseThrow(() -> new AppException(ErrorCode.CLASS_NOT_FOUND));
+
+        // Check if student is already enrolled
+        if (classStudentRepository.existsByClassEntityIdAndStudentId(classEntity.getId(), studentId)) {
+            throw new AppException(ErrorCode.STUDENT_ALREADY_IN_CLASS);
+        }
+
+        // Create new enrollment
+        ClassStudent classStudent = ClassStudent.builder()
+                .classEntity(classEntity)
+                .student(user)
+                .build();
+
+        classStudentRepository.save(classStudent);
+
+        return toStudentClassResponse(classStudent);
+    }
+
+    private String generateInviteExamSession(String code) {
+        return WEB_DOMAIN + "join/" + code;
     }
 }

@@ -46,6 +46,7 @@ public enum ErrorCode {
     BANK_QUESTION_NOT_FOUND(400, "Bank question not found", HttpStatus.NOT_FOUND),
     CAN_NOT_SEND_MESSAGE(400, "Can not send message", HttpStatus.BAD_REQUEST),
     QUESTION_NOT_FOUND(400, "Question not found", HttpStatus.NOT_FOUND),
+    EXAM_SESSION_SNAPSHOT_NOT_FOUND(400, "Exam session snapshot not found", HttpStatus.BAD_REQUEST),
 
     // ====== CLASS ========
     CLASS_NOT_FOUND(404, "Class not found", HttpStatus.NOT_FOUND),

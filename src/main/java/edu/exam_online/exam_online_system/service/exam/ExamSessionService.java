@@ -17,4 +17,8 @@ public interface ExamSessionService {
     Page<ExamSessionResponse> getAll(ExamSessionSearchParam param, Pageable pageable);
 
     ExamSessionResponse getDetail(Long examSessionId);
+
+    ExamSessionResponse updatePassingScore(Long examSessionId, Double passingScore);
+
+    edu.exam_online.exam_online_system.dto.response.exam.teacher.ExamSessionStatisticsResponse getExamSessionStatistics(Long examSessionId);
 }

@@ -1,4 +1,5 @@
 package edu.exam_online.exam_online_system.entity.exam;
+
 import edu.exam_online.exam_online_system.commons.constant.Difficulty;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -63,10 +64,6 @@ public class Question {
     @CreatedBy
     @Column(name = "created_by", nullable = false)
     private Long createdBy;
-
-    @Builder.Default
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ExamSessionStudentAnswer> studentAnswers = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)

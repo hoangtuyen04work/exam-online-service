@@ -1,6 +1,5 @@
 package edu.exam_online.exam_online_system.service.auth.impl;
 
-import edu.exam_online.exam_online_system.commons.constant.CustomClaimNames;
 import edu.exam_online.exam_online_system.dto.request.auth.ChangePasswordRequest;
 import edu.exam_online.exam_online_system.dto.request.auth.RefreshTokenRequest;
 import edu.exam_online.exam_online_system.dto.request.auth.RegisterRequest;
@@ -33,11 +32,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
-import java.time.OffsetDateTime;
 import java.util.Random;
 
 import static edu.exam_online.exam_online_system.commons.constant.TimeConstant.JWT_EXPIRATION_MS;

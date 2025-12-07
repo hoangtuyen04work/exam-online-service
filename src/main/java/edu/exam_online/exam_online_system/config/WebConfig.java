@@ -19,9 +19,9 @@ public class WebConfig {
         corsConfiguration.addAllowedOrigin("http://localhost:5173");
         corsConfiguration.addAllowedOrigin("http://localhost:5176");
         corsConfiguration.addAllowedOrigin(ORIGIN);
-        corsConfiguration.addAllowedOrigin("http://192.120.1.102:3000");
-        corsConfiguration.addAllowedOrigin("http://192.120.2.103:3000");
-        corsConfiguration.addAllowedOrigin("http://192.120.3.104:3000");
+        corsConfiguration.addAllowedOrigin("http://192.120.4.102:3000");
+        corsConfiguration.addAllowedOrigin("http://192.120.4.103:3000");
+        corsConfiguration.addAllowedOrigin("http://192.120.4.104:3000");
         corsConfiguration.addAllowedOrigin("http://192.120.5.105:3000");
 
         corsConfiguration.addAllowedMethod("*");

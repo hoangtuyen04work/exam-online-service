@@ -20,5 +20,6 @@ public class ExamSessionResponse {
     private OffsetDateTime expiredAt;
     private OffsetDateTime startAt;
     private String ownerName;
+    private Double passingScore;
+    private Integer durationMinutes;
 }
-
