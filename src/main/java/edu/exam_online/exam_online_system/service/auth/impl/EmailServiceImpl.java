@@ -6,6 +6,8 @@ import edu.exam_online.exam_online_system.service.auth.EmailService;
 import jakarta.mail.internet.InternetAddress;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class EmailServiceImpl implements EmailService {
+    private static final Logger log = LoggerFactory.getLogger(EmailServiceImpl.class);
     JavaMailSender mailSender;
 
     @Override
@@ -63,6 +66,7 @@ public class EmailServiceImpl implements EmailService {
             mailSender.send(message);
 
         } catch (Exception e) {
+            log.error("Error sending email: {}", e.getMessage());
             throw new AppException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
