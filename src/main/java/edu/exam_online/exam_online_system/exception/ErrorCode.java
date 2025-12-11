@@ -53,7 +53,8 @@ public enum ErrorCode{
     EXAM_SESSION_NOT_IN_CLASS(400, "Exam session not int class", HttpStatus.NOT_FOUND),
     STUDENT_NOT_IN_CLASS(400, "Student not in class", HttpStatus.NOT_FOUND),
     STUDENT_ALREADY_IN_CLASS(400, "Student already in class", HttpStatus.BAD_REQUEST),
-    EXAM_SESSION_SNAPSHOT_NOT_FOUND(400, "Exam session snapshot not found", HttpStatus.NOT_FOUND),;
+    EXAM_SESSION_SNAPSHOT_NOT_FOUND(400, "Exam session snapshot not found", HttpStatus.NOT_FOUND),
+    SEND_EMAIL_ERROR_CODE(400, "Send email error code", HttpStatus.BAD_REQUEST),;
 
     @Getter
     int status;

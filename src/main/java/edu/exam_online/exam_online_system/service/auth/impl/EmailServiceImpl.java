@@ -1,40 +1,63 @@
 package edu.exam_online.exam_online_system.service.auth.impl;
 
+import edu.exam_online.exam_online_system.dto.email.EmailRequest;
+import edu.exam_online.exam_online_system.dto.email.EmailResponse;
+import edu.exam_online.exam_online_system.dto.email.Recipient;
+import edu.exam_online.exam_online_system.dto.email.SendEmailRequest;
+import edu.exam_online.exam_online_system.dto.email.Sender;
 import edu.exam_online.exam_online_system.exception.AppException;
 import edu.exam_online.exam_online_system.exception.ErrorCode;
+import edu.exam_online.exam_online_system.repository.SendEmailClient;
 import edu.exam_online.exam_online_system.service.auth.EmailService;
-import jakarta.mail.internet.InternetAddress;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import lombok.experimental.NonFinal;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class EmailServiceImpl implements EmailService {
-    private static final Logger log = LoggerFactory.getLogger(EmailServiceImpl.class);
-    JavaMailSender mailSender;
+
+    @NonFinal
+    @Value("${api.key}")
+    String apiKey;
+    @NonFinal
+    @Value(("${email.name}"))
+    String emailSender;
+
+
+    SendEmailClient sendEmailClient;
+
+    @Override
+    public EmailResponse sendEmail(SendEmailRequest sendEmailRequest) throws AppException {
+        Sender sender = new Sender();
+        sender.setEmail(emailSender);
+        sender.setName("Exam Online System");
+        EmailRequest emailRequest = EmailRequest.builder()
+                .to(sendEmailRequest.getTo())
+                .sender(sender)
+                .subject(sendEmailRequest.getSubject())
+                .htmlContent(sendEmailRequest.getHtmlContent())
+                .build();
+        try{
+            return sendEmailClient.sendEmail(apiKey, emailRequest);
+        }
+        catch(Exception e){
+            log.error("Send email error: {}", e.getMessage());
+            throw new AppException(ErrorCode.SEND_EMAIL_ERROR_CODE);
+        }
+    }
 
     @Override
     public void sendVerificationEmail(String to, String code) {
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
-
-            // Đổi tên hiển thị của email
-            helper.setFrom(new InternetAddress("noreply@examsystem.com", "Exam Online System"));
-
-            helper.setTo(to);
-            helper.setSubject("Xác nhận tài khoản - Exam Online System");
-
-            String htmlContent = """
+        String htmlContent = """
             <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f7f7f7;">
                 <div style="max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
                     <h2 style="color: #333; text-align: center;">Xác nhận tài khoản</h2>
@@ -61,14 +84,19 @@ public class EmailServiceImpl implements EmailService {
             </div>
             """.formatted(code);
 
-            helper.setText(htmlContent, true); // HTML = true
+        String subject = "Xác nhận tài khoản - Exam Online System";
 
-            mailSender.send(message);
+        Recipient recipient = Recipient.builder()
+                .name("Exam Online System")
+                .email(to)
+                .build();
 
-        } catch (Exception e) {
-            log.error("Error sending email: {}", e.getMessage());
-            throw new AppException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
+
+        SendEmailRequest sendEmailRequest = SendEmailRequest.builder()
+                .htmlContent(htmlContent)
+                .subject(subject)
+                .to(List.of(recipient))
+                .build();
+        sendEmail(sendEmailRequest);
     }
-
 }

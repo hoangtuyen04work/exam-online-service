@@ -2,6 +2,7 @@ package edu.exam_online.exam_online_system;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -12,6 +13,7 @@ import java.util.TimeZone;
 @EnableWebSecurity
 @EnableScheduling
 @EnableJpaAuditing(dateTimeProviderRef = "auditingDateTimeProvider")
+@EnableFeignClients
 public class ExamOnlineSystemApplication {
 
 	public static void main(String[] args) {
