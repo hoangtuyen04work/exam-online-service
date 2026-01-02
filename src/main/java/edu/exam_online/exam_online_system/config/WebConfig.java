@@ -22,7 +22,7 @@ public class WebConfig {
         corsConfiguration.addAllowedOrigin("http://192.120.4.102:3000");
         corsConfiguration.addAllowedOrigin("http://192.120.4.103:3000");
         corsConfiguration.addAllowedOrigin("http://192.120.4.104:3000");
-        corsConfiguration.addAllowedOrigin("http://192.120.5.105:3000");
+        corsConfiguration.addAllowedOrigin("https://exam-online-system.vercel.app");
 
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.addAllowedHeader("*");

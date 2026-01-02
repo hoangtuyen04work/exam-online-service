@@ -29,20 +29,17 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
-        // StompHeaderAccessor.wrap(message) có thể ném NPE nếu message không phải STOMP
         // Sử dụng cách an toàn hơn:
         StompHeaderAccessor accessor =
                 MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
         // Chỉ xử lý khi accessor tồn tại và là lệnh CONNECT
         if (accessor != null && StompCommand.CONNECT.equals(accessor.getCommand())) {
-
             List<String> authHeaders = accessor.getNativeHeader("Authorization");
             log.info("[WS] Connecting... Token header: {}", authHeaders);
 
             if (authHeaders == null || authHeaders.isEmpty()) {
                 log.error("[WS] Authentication failed: No Authorization header.");
-                // BẮT BUỘC: Ném lỗi để từ chối kết nối
                 throw new AppException(ErrorCode.NOT_AUTHENTICATION);
             }
 
@@ -51,7 +48,6 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
 
             if (!tokenUtils.validateToken(token)) {
                 log.error("[WS] Authentication failed: Invalid token.");
-                // BẮT BUỘC: Ném lỗi để từ chối kết nối
                 throw new AppException(ErrorCode.NOT_AUTHENTICATION);
             }
 
@@ -59,14 +55,9 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
             UsernamePasswordAuthenticationToken auth =
                     new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
 
-            // ⭐ LƯU VÀO SESSION KHI CONNECT THÀNH CÔNG
             accessor.setUser(auth);
             log.info("[WS] Connection established. Principal set = {}", auth.getName());
         }
-
-        // Không cần check SUBSCRIBE ở đây.
-        // Principal sẽ tự động được truyền đi từ session.
-
         return message;
     }
 }
