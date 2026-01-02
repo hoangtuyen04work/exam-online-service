@@ -18,7 +18,9 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query("SELECT q FROM Question q WHERE q.id IN :ids")
     List<Question> findAllByIdIn(@Param("ids") List<Long> ids);
 
-    @Query("SELECT q FROM Question q WHERE q.bankQuestion.id = :bankQuestionId AND q.difficulty = :difficulty ORDER BY RAND() LIMIT :quantity")
-    List<Question> findByBankQuestionId(@Param("bankQuestionId") Long bankQuestionId, @Param("difficulty")Difficulty difficulty, @Param("quantity")Long quantity);
+    @Query("SELECT q FROM Question q WHERE q.bankQuestion.id = :bankQuestionId AND " +
+            "q.difficulty = :difficulty ORDER BY RAND() LIMIT :quantity")
+    List<Question> findByBankQuestionId(@Param("bankQuestionId") Long bankQuestionId,
+                                        @Param("difficulty")Difficulty difficulty, @Param("quantity")Long quantity);
 
 }

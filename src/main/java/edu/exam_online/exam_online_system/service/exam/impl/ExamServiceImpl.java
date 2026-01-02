@@ -82,7 +82,6 @@ public class ExamServiceImpl implements ExamService {
                 .map(question -> questionExamMapper.toEntity(exam, question)).toList();
         questionExams.forEach(questionExam -> questionExam.setExam(exam));
         exam.setQuestionExams(questionExams);
-        exam.setQuestionExams(questionExams);
 
         teacher.getExams().add(exam);
         exam.setTeacher(teacher);

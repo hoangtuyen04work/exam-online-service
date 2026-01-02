@@ -69,3 +69,9 @@ CREATE INDEX idx_student_answer_answer_snapshot ON exam_session_student_answers(
 -- Add comment to explain the table purpose
 ALTER TABLE exam_session_student_answers COMMENT = 'Student answers referencing snapshot questions and answers to maintain consistency';
 
+
+-- changeset tuyen_hh:1733510100000-1
+-- Update 1 email with multi role
+ALTER TABLE user
+    DROP INDEX email;
+

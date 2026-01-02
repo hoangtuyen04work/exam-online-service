@@ -14,8 +14,9 @@
 URL: jdbc:mysql://localhost:3306/exam_online_system?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
 DB_USERNAME: root
 DB_PASSWORD: 123
+BREVO-KEY: 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
 
-EMAIL: hoanghuutuyen06022004@gmail.com
+EMAIL: hoanghuutuyen060204@gmail.com
 EMAIL_PASSWORD: ctrw zreb qvdy vccx
 
 AZURE_CLIENT_ID: 5e8fd1e6-5c31-4b10-873a-c0cbb2565f02

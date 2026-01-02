@@ -13,7 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserInfoResponse {
-    
+
     private Long id;
     private String username;
     private String email;
@@ -23,6 +23,7 @@ public class UserInfoResponse {
     private String phone;
     private Boolean isActive;
     private Boolean isEmailVerified;
+    private Long roleId;
     private OffsetDateTime lastLogin;
     private Set<String> roles;
     private Set<String> permissions;

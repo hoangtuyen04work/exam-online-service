@@ -29,7 +29,7 @@ public class EmailServiceImpl implements EmailService {
     @Value("${api.key}")
     String apiKey;
     @NonFinal
-    @Value(("${email.name}"))
+    @Value("${email.name}")
     String emailSender;
 
 

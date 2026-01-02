@@ -24,6 +24,17 @@ public interface UserMapper {
                 .build();
     }
 
+    default User toEntity(String email , String username, Role role){
+        return User.builder()
+                .email(email)
+                .username(username)
+                .role(role)
+                .password("password")
+                .isActive(true)
+                .isEmailVerified(true)
+                .build();
+    }
+
     default User toEntity(RegisterRequest request, String username, String password, Role role, String userCode){
         return User.builder()
                 .email(request.getEmail())

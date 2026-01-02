@@ -25,6 +25,7 @@ public enum ErrorCode{
 
     // ===== ROLE =====
     ROLE_NOT_FOUND(404, "Role not found", HttpStatus.NOT_FOUND),
+    ROLE_IS_REQUIRED(400, "Role is required", HttpStatus.BAD_REQUEST),
 
     // ===== SYSTEM =====
     INTERNAL_SERVER_ERROR(500, "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR),

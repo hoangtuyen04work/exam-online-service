@@ -4,7 +4,6 @@ import edu.exam_online.exam_online_system.dto.email.EmailRequest;
 import edu.exam_online.exam_online_system.dto.email.EmailResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
