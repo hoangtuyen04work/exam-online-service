@@ -16,6 +16,7 @@ import edu.exam_online.exam_online_system.dto.response.exam.student.result.Quest
 import edu.exam_online.exam_online_system.dto.response.exam.teacher.StudentJoinedExamSessionResponse;
 import edu.exam_online.exam_online_system.entity.auth.User;
 import edu.exam_online.exam_online_system.entity.exam.ExamSession;
+import edu.exam_online.exam_online_system.entity.exam.ExamSessionAnswerSnapshot;
 import edu.exam_online.exam_online_system.entity.exam.ExamSessionStudent;
 import edu.exam_online.exam_online_system.entity.exam.ExamSessionStudentAnswer;
 import edu.exam_online.exam_online_system.utils.TimeUtils;
@@ -110,7 +111,7 @@ public interface ExamSessionStudentMapper {
     }
 
     default AnswerResultResponse toAnswerResultResponse(ExamSessionStudentAnswer examSessionStudentAnswer,
-            edu.exam_online.exam_online_system.entity.exam.ExamSessionAnswerSnapshot answer) {
+                                                        ExamSessionAnswerSnapshot answer) {
         return AnswerResultResponse.builder()
                 .answerId(answer.getOriginalAnswerId())
                 .content(answer.getContent())

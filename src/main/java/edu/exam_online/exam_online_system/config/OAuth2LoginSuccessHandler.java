@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -32,6 +33,9 @@ public class OAuth2LoginSuccessHandler
     private final RoleRepository roleRepository;
     private final TokenService tokenService;
     private final UserMapper userMapper;
+
+    @Value("${origin}")
+    private String REDIRECT_URI;
 
     @Override
     @Transactional
@@ -59,7 +63,7 @@ public class OAuth2LoginSuccessHandler
         String jwt = createOrUpdateUser(oauthToken, request, Long.parseLong(role));
 
         response.sendRedirect(
-            "http://localhost:3000/oauth2/success?token=" + jwt
+                REDIRECT_URI + "/oauth2/success?token=" + jwt
         );
     }
 
