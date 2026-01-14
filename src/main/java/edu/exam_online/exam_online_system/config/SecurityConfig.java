@@ -2,6 +2,8 @@ package edu.exam_online.exam_online_system.config;
 
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -26,6 +28,10 @@ public class SecurityConfig {
     OAuth2LoginSuccessHandler successHandler;
     CustomOAuth2AuthorizationRequestResolver customOAuth2AuthorizationRequestResolver;
 //    CustomAuthenticationProvider customAuthenticationProvider;
+
+    @Value("${origin}")
+    @NonFinal
+    private String REDIRECT_URI;
 
     public SecurityConfig(CustomJwtDecoder customJwtDecoder, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, OAuth2LoginSuccessHandler successHandler, CustomOAuth2AuthorizationRequestResolver customOAuth2AuthorizationRequestResolver) {
         this.customJwtDecoder = customJwtDecoder;
@@ -93,7 +99,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationSuccessHandler oAuth2SuccessHandler() {
         return (request, response, authentication) -> {
-            response.sendRedirect("http://localhost:3000/oauth2/success");
+            response.sendRedirect(REDIRECT_URI + "/oauth2/success");
         };
     }
 

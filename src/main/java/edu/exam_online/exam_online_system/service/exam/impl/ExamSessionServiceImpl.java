@@ -21,6 +21,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,7 +43,10 @@ public class ExamSessionServiceImpl implements ExamSessionService {
 
     ExamSessionMapper examSessionMapper;
 
-    static String WEB_DOMAIN = "http://localhost:3000/exam/";
+    @Value("${origin}")
+    private String REDIRECT_URI;
+
+    static String WEB_DOMAIN = "/exam/";
 
     @Transactional
     @Override
@@ -225,6 +229,6 @@ public class ExamSessionServiceImpl implements ExamSessionService {
     }
 
     private String generateInviteExamSession(String code) {
-        return WEB_DOMAIN + "join/" + code;
+        return REDIRECT_URI + WEB_DOMAIN + "join/" + code;
     }
 }
