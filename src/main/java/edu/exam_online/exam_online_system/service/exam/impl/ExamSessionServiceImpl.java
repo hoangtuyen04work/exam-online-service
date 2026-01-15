@@ -20,6 +20,7 @@ import edu.exam_online.exam_online_system.utils.SecurityUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -44,6 +45,7 @@ public class ExamSessionServiceImpl implements ExamSessionService {
     ExamSessionMapper examSessionMapper;
 
     @Value("${origin}")
+    @NonFinal
     private String REDIRECT_URI;
 
     static String WEB_DOMAIN = "/exam/";
