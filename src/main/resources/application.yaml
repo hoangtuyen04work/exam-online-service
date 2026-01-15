@@ -38,6 +38,7 @@ spring:
         format_sql: true
         jdbc:
           batch_size: 50
+          time_zone: Asia/Ho_Chi_Minh
         order_inserts: true
         order_updates: true
   security:

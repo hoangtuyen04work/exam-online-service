@@ -35,174 +35,191 @@ import static edu.exam_online.exam_online_system.commons.constant.ExamStudentSta
 @Mapper(componentModel = "spring")
 public interface ExamSessionStudentMapper {
 
-    default StudentStatusResponse toStudentStatusResponse(ExamSessionStudent examSessionStudent) {
-        return StudentStatusResponse.builder()
-                .username(examSessionStudent.getStudent().getUsername())
-                .status(examSessionStudent.getStatus())
-                .timestamp(examSessionStudent.getStatus() == IN_PROGRESS ? examSessionStudent.getStartedAt()
-                        : examSessionStudent.getSubmittedAt())
-                .userId(examSessionStudent.getStudent().getId())
-                .build();
-    }
+        default StudentStatusResponse toStudentStatusResponse(ExamSessionStudent examSessionStudent) {
+                User student = examSessionStudent.getStudent();
+                String fullName = (student.getFirstName() != null ? student.getFirstName() : "") +
+                                " " +
+                                (student.getLastName() != null ? student.getLastName() : "");
+                fullName = fullName.trim();
+                if (fullName.isEmpty()) {
+                        fullName = student.getUsername();
+                }
 
-    default void updateEntity(ExamSessionStudent examSessionStudent, TeacherOverallFeedBackRequest request) {
-        examSessionStudent.setTeacherOverallFeedback(request.getTeacherOverallFeedBack());
-
-        if (request.getTeacherFeedBackRequests() == null || request.getTeacherFeedBackRequests().isEmpty()) {
-            return;
+                return StudentStatusResponse.builder()
+                                .username(student.getUsername())
+                                .fullName(fullName)
+                                .email(student.getEmail())
+                                .status(examSessionStudent.getStatus())
+                                .timestamp(examSessionStudent.getStatus() == IN_PROGRESS
+                                                ? examSessionStudent.getStartedAt()
+                                                : examSessionStudent.getSubmittedAt())
+                                .userId(student.getId())
+                                .build();
         }
-        Map<Long, String> questionIdToTeacherFeedBack = request.getTeacherFeedBackRequests().stream()
-                .collect(Collectors.toMap(TeacherFeedBackRequest::getQuestionId,
-                        TeacherFeedBackRequest::getTeacherFeedBack));
-        examSessionStudent.getAnswers()
-                .forEach(answer -> answer.setTeacherFeedback(questionIdToTeacherFeedBack
-                        .get(answer.getExamSessionQuestionSnapshot().getOriginalQuestionId())));
-    }
 
-    default StudentJoinedExamSessionResponse toJoinedResponse(ExamSessionStudent examSessionStudent) {
-        return StudentJoinedExamSessionResponse.builder()
-                .examSessionStudentId(examSessionStudent.getId())
-                .studentId(examSessionStudent.getStudent().getId())
-                .score(examSessionStudent.getTotalScore())
-                .exitCount(examSessionStudent.getExitCount())
-                .status(examSessionStudent.getStatus())
-                .submittedAt(examSessionStudent.getSubmittedAt() == null ? null : examSessionStudent.getSubmittedAt())
-                .studentName(examSessionStudent.getStudent().getUsername())
-                .build();
-    }
+        default void updateEntity(ExamSessionStudent examSessionStudent, TeacherOverallFeedBackRequest request) {
+                examSessionStudent.setTeacherOverallFeedback(request.getTeacherOverallFeedBack());
 
-    default ExamSessionStudentResultResponse toResponse(ExamSessionStudent examSessionStudent) {
-        return ExamSessionStudentResultResponse.builder()
-                .examSessionId(examSessionStudent.getExamSession().getId())
-                .examSessionName(examSessionStudent.getExamSession().getName())
-                .totalScore(examSessionStudent.getTotalScore())
-                .status(examSessionStudent.getStatus())
-                .submittedAt(examSessionStudent.getSubmittedAt())
-                .teacherOverallFeedback(examSessionStudent.getTeacherOverallFeedback())
-                .questions(mapQuestions(examSessionStudent))
-                .exitCount(examSessionStudent.getExitCount())
-                .build();
-    }
-
-    default List<QuestionResultResponse> mapQuestions(ExamSessionStudent examSessionStudent) {
-        if (examSessionStudent == null || examSessionStudent.getAnswers() == null) {
-            return Collections.emptyList();
+                if (request.getTeacherFeedBackRequests() == null || request.getTeacherFeedBackRequests().isEmpty()) {
+                        return;
+                }
+                Map<Long, String> questionIdToTeacherFeedBack = request.getTeacherFeedBackRequests().stream()
+                                .collect(Collectors.toMap(TeacherFeedBackRequest::getQuestionId,
+                                                TeacherFeedBackRequest::getTeacherFeedBack));
+                examSessionStudent.getAnswers()
+                                .forEach(answer -> answer.setTeacherFeedback(questionIdToTeacherFeedBack
+                                                .get(answer.getExamSessionQuestionSnapshot().getOriginalQuestionId())));
         }
-        return examSessionStudent.getAnswers().stream()
-                .map(this::mapQuestionResult)
-                .toList();
-    }
 
-    default QuestionResultResponse mapQuestionResult(ExamSessionStudentAnswer answer) {
-        return QuestionResultResponse.builder()
-                .questionId(answer.getExamSessionQuestionSnapshot().getOriginalQuestionId())
-                .content(answer.getExamSessionQuestionSnapshot().getContent())
-                .explanation(answer.getExamSessionQuestionSnapshot().getExplanation())
-                .teacherFeedback(answer.getTeacherFeedback())
-                .answers(mapAnswers(answer))
-                .build();
-    }
+        default StudentJoinedExamSessionResponse toJoinedResponse(ExamSessionStudent examSessionStudent) {
+                return StudentJoinedExamSessionResponse.builder()
+                                .examSessionStudentId(examSessionStudent.getId())
+                                .studentId(examSessionStudent.getStudent().getId())
+                                .score(examSessionStudent.getTotalScore())
+                                .exitCount(examSessionStudent.getExitCount())
+                                .status(examSessionStudent.getStatus())
+                                .submittedAt(examSessionStudent.getSubmittedAt() == null ? null
+                                                : examSessionStudent.getSubmittedAt())
+                                .studentName(examSessionStudent.getStudent().getUsername())
+                                .build();
+        }
 
-    default List<AnswerResultResponse> mapAnswers(ExamSessionStudentAnswer answer) {
-        return answer.getExamSessionQuestionSnapshot().getExamSessionAnswerSnapshots()
-                .stream()
-                .map(a -> toAnswerResultResponse(answer, a))
-                .toList();
-    }
+        default ExamSessionStudentResultResponse toResponse(ExamSessionStudent examSessionStudent) {
+                return ExamSessionStudentResultResponse.builder()
+                                .examSessionId(examSessionStudent.getExamSession().getId())
+                                .examSessionName(examSessionStudent.getExamSession().getName())
+                                .totalScore(examSessionStudent.getTotalScore())
+                                .status(examSessionStudent.getStatus())
+                                .submittedAt(examSessionStudent.getSubmittedAt())
+                                .teacherOverallFeedback(examSessionStudent.getTeacherOverallFeedback())
+                                .questions(mapQuestions(examSessionStudent))
+                                .exitCount(examSessionStudent.getExitCount())
+                                .build();
+        }
 
-    default AnswerResultResponse toAnswerResultResponse(ExamSessionStudentAnswer examSessionStudentAnswer,
-                                                        ExamSessionAnswerSnapshot answer) {
-        return AnswerResultResponse.builder()
-                .answerId(answer.getOriginalAnswerId())
-                .content(answer.getContent())
-                .correct(answer.getIsCorrect())
-                .selected(examSessionStudentAnswer.getSelectedAnswerSnapshot() != null
-                        && examSessionStudentAnswer.getSelectedAnswerSnapshot().getId().equals(answer.getId()))
-                .build();
-    }
+        default List<QuestionResultResponse> mapQuestions(ExamSessionStudent examSessionStudent) {
+                if (examSessionStudent == null || examSessionStudent.getAnswers() == null) {
+                        return Collections.emptyList();
+                }
+                return examSessionStudent.getAnswers().stream()
+                                .map(this::mapQuestionResult)
+                                .toList();
+        }
 
-    @Mapping(target = "examSessionId", source = "examSession.id")
-    @Mapping(target = "examSessionName", source = "examSession.name")
-    @Mapping(target = "totalScore", source = "totalScore")
-    @Mapping(target = "status", source = "status")
-    @Mapping(target = "submittedAt", source = "submittedAt")
-    ExamSessionStudentResponse toDto(ExamSessionStudent entity);
+        default QuestionResultResponse mapQuestionResult(ExamSessionStudentAnswer answer) {
+                return QuestionResultResponse.builder()
+                                .questionId(answer.getExamSessionQuestionSnapshot().getOriginalQuestionId())
+                                .content(answer.getExamSessionQuestionSnapshot().getContent())
+                                .explanation(answer.getExamSessionQuestionSnapshot().getExplanation())
+                                .teacherFeedback(answer.getTeacherFeedback())
+                                .answers(mapAnswers(answer))
+                                .build();
+        }
 
-    default ExamSessionStudent toEntity(ExamSession examSession, User student) {
-        Integer durationMinutes = examSession.getDurationMinutes();
-        return ExamSessionStudent.builder()
-                .examSession(examSession)
-                .student(student)
-                .expiredAt(TimeUtils.getCurrentTime().plusMinutes(durationMinutes).isAfter(examSession.getExpiredAt())
-                        ? examSession.getExpiredAt()
-                        : TimeUtils.getCurrentTime().plusMinutes(durationMinutes))
-                .build();
-    }
+        default List<AnswerResultResponse> mapAnswers(ExamSessionStudentAnswer answer) {
+                return answer.getExamSessionQuestionSnapshot().getExamSessionAnswerSnapshots()
+                                .stream()
+                                .map(a -> toAnswerResultResponse(answer, a))
+                                .toList();
+        }
 
-    @Mapping(target = "examSessionId", source = "examSession.id")
-    JoinExamSessionResponse toResponse(ExamSession examSession, ExamSessionStudentStateEnum state);
+        default AnswerResultResponse toAnswerResultResponse(ExamSessionStudentAnswer examSessionStudentAnswer,
+                        ExamSessionAnswerSnapshot answer) {
+                return AnswerResultResponse.builder()
+                                .answerId(answer.getOriginalAnswerId())
+                                .content(answer.getContent())
+                                .correct(answer.getIsCorrect())
+                                .selected(examSessionStudentAnswer.getSelectedAnswerSnapshot() != null
+                                                && examSessionStudentAnswer.getSelectedAnswerSnapshot().getId()
+                                                                .equals(answer.getId()))
+                                .build();
+        }
 
-    @Mapping(target = "examSessionId", source = "examSessionStudent.examSession.id")
-    @Mapping(target = "questions", ignore = true)
-    ExamSessionContentResponse toDoneResponse(ExamSessionStudent examSessionStudent, ExamStudentStatusEnum status);
+        @Mapping(target = "examSessionId", source = "examSession.id")
+        @Mapping(target = "examSessionName", source = "examSession.name")
+        @Mapping(target = "totalScore", source = "totalScore")
+        @Mapping(target = "status", source = "status")
+        @Mapping(target = "submittedAt", source = "submittedAt")
+        ExamSessionStudentResponse toDto(ExamSessionStudent entity);
 
-    default ExamSessionContentResponse toDraftResponse(ExamSessionStudent examSessionStudent,
-            ExamStudentStatusEnum status) {
-        return ExamSessionContentResponse.builder()
-                .examSessionStudentId(examSessionStudent.getId())
-                .examSessionId(examSessionStudent.getExamSession().getId())
-                .status(status)
-                .startedAt(examSessionStudent.getStartedAt())
-                .expiredAt(examSessionStudent.getExpiredAt())
-                .durationMinutes(examSessionStudent.getExamSession().getDurationMinutes())
-                .name(examSessionStudent.getExamSession().getName())
-                .questions(toQuestionContentResponse(examSessionStudent.getAnswers()))
-                .build();
-    }
+        default ExamSessionStudent toEntity(ExamSession examSession, User student) {
+                Integer durationMinutes = examSession.getDurationMinutes();
+                return ExamSessionStudent.builder()
+                                .examSession(examSession)
+                                .student(student)
+                                .expiredAt(TimeUtils.getCurrentTime().plusMinutes(durationMinutes)
+                                                .isAfter(examSession.getExpiredAt())
+                                                                ? examSession.getExpiredAt()
+                                                                : TimeUtils.getCurrentTime()
+                                                                                .plusMinutes(durationMinutes))
+                                .build();
+        }
 
-    default ExamSessionContentResponse toNewResponse(ExamSessionStudent examSessionStudent) {
-        return ExamSessionContentResponse.builder()
-                .examSessionStudentId(examSessionStudent.getId())
-                .examSessionId(examSessionStudent.getExamSession().getId())
-                .startedAt(examSessionStudent.getStartedAt())
-                .expiredAt(examSessionStudent.getExpiredAt())
-                .durationMinutes(examSessionStudent.getExamSession().getDurationMinutes())
-                .name(examSessionStudent.getExamSession().getName())
-                .questions(toQuestionContentResponse(examSessionStudent.getAnswers()))
-                .build();
-    }
+        @Mapping(target = "examSessionId", source = "examSession.id")
+        JoinExamSessionResponse toResponse(ExamSession examSession, ExamSessionStudentStateEnum state);
 
-    default List<QuestionContentResponse> toQuestionContentResponse(List<ExamSessionStudentAnswer> answers) {
-        List<QuestionContentResponse> responses = answers.stream()
-                .map(this::toQuestionContentResponse)
-                .collect(Collectors.toList());
+        @Mapping(target = "examSessionId", source = "examSessionStudent.examSession.id")
+        @Mapping(target = "questions", ignore = true)
+        ExamSessionContentResponse toDoneResponse(ExamSessionStudent examSessionStudent, ExamStudentStatusEnum status);
 
-        Collections.shuffle(responses);
-        return responses;
+        default ExamSessionContentResponse toDraftResponse(ExamSessionStudent examSessionStudent,
+                        ExamStudentStatusEnum status) {
+                return ExamSessionContentResponse.builder()
+                                .examSessionStudentId(examSessionStudent.getId())
+                                .examSessionId(examSessionStudent.getExamSession().getId())
+                                .status(status)
+                                .startedAt(examSessionStudent.getStartedAt())
+                                .expiredAt(examSessionStudent.getExpiredAt())
+                                .durationMinutes(examSessionStudent.getExamSession().getDurationMinutes())
+                                .name(examSessionStudent.getExamSession().getName())
+                                .questions(toQuestionContentResponse(examSessionStudent.getAnswers()))
+                                .build();
+        }
 
-    }
+        default ExamSessionContentResponse toNewResponse(ExamSessionStudent examSessionStudent) {
+                return ExamSessionContentResponse.builder()
+                                .examSessionStudentId(examSessionStudent.getId())
+                                .examSessionId(examSessionStudent.getExamSession().getId())
+                                .startedAt(examSessionStudent.getStartedAt())
+                                .expiredAt(examSessionStudent.getExpiredAt())
+                                .durationMinutes(examSessionStudent.getExamSession().getDurationMinutes())
+                                .name(examSessionStudent.getExamSession().getName())
+                                .questions(toQuestionContentResponse(examSessionStudent.getAnswers()))
+                                .build();
+        }
 
-    default QuestionContentResponse toQuestionContentResponse(ExamSessionStudentAnswer answer) {
-        return QuestionContentResponse.builder()
-                .questionId(answer.getExamSessionQuestionSnapshot().getOriginalQuestionId())
-                .content(answer.getExamSessionQuestionSnapshot().getContent())
-                .answers(toAnswerContentResponse(answer))
-                .build();
-    }
+        default List<QuestionContentResponse> toQuestionContentResponse(List<ExamSessionStudentAnswer> answers) {
+                List<QuestionContentResponse> responses = answers.stream()
+                                .map(this::toQuestionContentResponse)
+                                .collect(Collectors.toList());
 
-    default List<AnswerContentResponse> toAnswerContentResponse(ExamSessionStudentAnswer answers) {
-        List<AnswerContentResponse> response = new ArrayList<>();
-        answers.getExamSessionQuestionSnapshot().getExamSessionAnswerSnapshots().forEach(answer -> {
-            AnswerContentResponse a = AnswerContentResponse.builder()
-                    .answerId(answer.getOriginalAnswerId())
-                    .content(answer.getContent())
-                    .isSelected(answers.getSelectedAnswerSnapshot() != null
-                            && answers.getSelectedAnswerSnapshot().getId().equals(answer.getId()))
-                    .build();
-            response.add(a);
-        });
-        Collections.shuffle(response);
-        return response;
-    }
+                Collections.shuffle(responses);
+                return responses;
+
+        }
+
+        default QuestionContentResponse toQuestionContentResponse(ExamSessionStudentAnswer answer) {
+                return QuestionContentResponse.builder()
+                                .questionId(answer.getExamSessionQuestionSnapshot().getOriginalQuestionId())
+                                .content(answer.getExamSessionQuestionSnapshot().getContent())
+                                .answers(toAnswerContentResponse(answer))
+                                .build();
+        }
+
+        default List<AnswerContentResponse> toAnswerContentResponse(ExamSessionStudentAnswer answers) {
+                List<AnswerContentResponse> response = new ArrayList<>();
+                answers.getExamSessionQuestionSnapshot().getExamSessionAnswerSnapshots().forEach(answer -> {
+                        AnswerContentResponse a = AnswerContentResponse.builder()
+                                        .answerId(answer.getOriginalAnswerId())
+                                        .content(answer.getContent())
+                                        .isSelected(answers.getSelectedAnswerSnapshot() != null
+                                                        && answers.getSelectedAnswerSnapshot().getId()
+                                                                        .equals(answer.getId()))
+                                        .build();
+                        response.add(a);
+                });
+                Collections.shuffle(response);
+                return response;
+        }
 
 }

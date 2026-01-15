@@ -15,7 +15,9 @@ import edu.exam_online.exam_online_system.utils.SecurityUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -33,7 +35,11 @@ public class StudentClassServiceImpl implements StudentClassService {
     ClassRepository classRepository;
     UserRepository userRepository;
 
-    static String WEB_DOMAIN = "http://localhost:3000/exam/";
+    @Value("${origin}")
+    @NonFinal
+    private String origin;
+
+    static String WEB_DOMAIN = "/exam/";
 
     @Override
     @Transactional(readOnly = true)
@@ -134,6 +140,6 @@ public class StudentClassServiceImpl implements StudentClassService {
     }
 
     private String generateInviteExamSession(String code) {
-        return WEB_DOMAIN + "join/" + code;
+        return origin + WEB_DOMAIN + "join/" + code;
     }
 }

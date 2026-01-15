@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -78,8 +79,8 @@ public class ExamServiceImpl implements ExamService {
         });
 
         Exam exam = examMapper.toEntity(request);
-        List<QuestionExam> questionExams =  questions.stream()
-                .map(question -> questionExamMapper.toEntity(exam, question)).toList();
+        Set<QuestionExam> questionExams =  questions.stream()
+                .map(question -> questionExamMapper.toEntity(exam, question)).collect(Collectors.toSet());
         questionExams.forEach(questionExam -> questionExam.setExam(exam));
         exam.setQuestionExams(questionExams);
 
@@ -183,9 +184,8 @@ public class ExamServiceImpl implements ExamService {
     public ExamDetailResponse getExamDetail(Long examId) {
         Long teacherId = SecurityUtils.getUserId();
 
-        Exam exam = examRepository.findById(examId)
+        Exam exam = examRepository.findExamWithQuestionsAndAnswers(examId)
                 .orElseThrow(() -> new AppException(ErrorCode.EXAM_NOT_FOUND));
-        exam.getQuestionExams().forEach(questionExam -> questionExam.getQuestion().getAnswers().size());
 
         if (!exam.getTeacher().getId().equals(teacherId)) {
             throw new AppException(ErrorCode.NOT_AUTHORIZATION);
@@ -231,14 +231,14 @@ public class ExamServiceImpl implements ExamService {
     public ExamResponse createExam(ExamCreationRequest request){
         Exam exam = examMapper.toEntity(request);
         List<QuestionCreationRequest> questionRequests = request.getQuestions();
-        List<QuestionExam> questionExams = questionRequests.stream()
+        Set<QuestionExam> questionExams = questionRequests.stream()
                 .map(
                         questionRequest -> {
                             Question question = createQuestion(questionRequest);
                             return createQuestionExam(questionRequest, question, exam);
                         }
                 )
-                .toList();
+                .collect(Collectors.toSet());
         exam.setQuestionExams(questionExams);
 
         Long userId = SecurityUtils.getUserId();
@@ -320,9 +320,9 @@ public class ExamServiceImpl implements ExamService {
     private Question createQuestion(QuestionCreationRequest request){
         Question question = questionMapper.toEntity(request);
 
-        List<Answer> answers = request.getAnswers().stream()
+        Set<Answer> answers = request.getAnswers().stream()
                 .map(answerRequest -> answerMapper.toEntity(answerRequest, question) )
-                .toList();
+                .collect(Collectors.toSet());
         question.setAnswers(answers);
         return question;
     }
@@ -344,9 +344,9 @@ public class ExamServiceImpl implements ExamService {
     private Question createQuestion(QuestionUpdateRequest request){
         Question question = questionMapper.toEntity(request);
 
-        List<Answer> answers = request.getAnswers().stream()
+        Set<Answer> answers = request.getAnswers().stream()
                 .map(answerRequest -> answerMapper.toEntity(answerRequest, question) )
-                .toList();
+                .collect(Collectors.toSet());
         question.setAnswers(answers);
         return question;
     }

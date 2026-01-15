@@ -13,6 +13,8 @@ import java.time.OffsetDateTime;
 public class StudentStatusResponse {
     private Long userId;
     private String username;
+    private String fullName;
+    private String email;
     private ExamStudentStatusEnum status;
     private OffsetDateTime timestamp;
 }

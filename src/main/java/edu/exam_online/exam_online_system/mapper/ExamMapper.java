@@ -16,7 +16,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public interface ExamMapper {
@@ -45,7 +47,7 @@ public interface ExamMapper {
     @AfterMapping
     default void makeMutable(@MappingTarget Exam exam) {
         if (exam.getQuestionExams() != null) {
-            exam.setQuestionExams(new ArrayList<>(exam.getQuestionExams()));
+            exam.setQuestionExams(new HashSet<>(exam.getQuestionExams()));
         }
     }
     @AfterMapping

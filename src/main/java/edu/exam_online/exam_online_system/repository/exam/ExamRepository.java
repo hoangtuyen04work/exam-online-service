@@ -15,6 +15,16 @@ import java.util.Optional;
 @Repository
 public interface ExamRepository extends JpaRepository<Exam, Long> {
 
+    @Query("""
+    SELECT DISTINCT e FROM Exam e
+    LEFT JOIN FETCH e.questionExams qe
+    LEFT JOIN FETCH qe.question q
+    LEFT JOIN FETCH q.answers a
+    WHERE e.id = :examId
+    """)
+    Optional<Exam> findExamWithQuestionsAndAnswers(@Param("examId") Long examId);
+
+
     // Lấy tất cả kỳ thi của một giáo viên
     List<Exam> findByTeacher(User teacher);
 

@@ -29,6 +29,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -53,7 +55,7 @@ public class ExamSessionServiceImpl implements ExamSessionService {
     @Transactional
     @Override
     public ExamSessionResponse createSession(ExamSessionCreationRequest request) {
-        Exam exam = examRepository.findById(request.getExamId())
+        Exam exam = examRepository.findExamWithQuestionsAndAnswers(request.getExamId())
                 .orElseThrow(() -> new AppException(ErrorCode.EXAM_NOT_FOUND));
 
         Long ownerId = SecurityUtils.getUserId();
@@ -81,6 +83,7 @@ public class ExamSessionServiceImpl implements ExamSessionService {
     private void createExamSessionSnapshot(ExamSession session, Exam exam) {
         log.info("Creating snapshot for exam session {} from exam {}", session.getId(), exam.getId());
 
+        List<ExamSessionQuestionSnapshot> snapshotList = new ArrayList<>();
         int questionOrder = 0;
         for (QuestionExam questionExam : exam.getQuestionExams()) {
             Question originalQuestion = questionExam.getQuestion();
@@ -97,7 +100,9 @@ public class ExamSessionServiceImpl implements ExamSessionService {
                     .questionOrder(questionOrder++)
                     .build();
 
-            examSessionQuestionSnapshotRepository.save(snapshotQuestion);
+            snapshotList.add(snapshotQuestion);
+//            examSessionQuestionSnapshotRepository.save(snapshotQuestion);
+            List<ExamSessionAnswerSnapshot> snapshotAnswerList = new ArrayList<>();
 
             // Create snapshot of answers
             int answerOrder = 0;
@@ -110,9 +115,14 @@ public class ExamSessionServiceImpl implements ExamSessionService {
                         .answerOrder(answerOrder++)
                         .build();
 
-                examSessionAnswerSnapshotRepository.save(snapshotAnswer);
+                snapshotAnswerList.add(snapshotAnswer);
+
+//                examSessionAnswerSnapshotRepository.save(snapshotAnswer);
             }
+            snapshotQuestion.setExamSessionAnswerSnapshots(snapshotAnswerList);
         }
+
+        examSessionQuestionSnapshotRepository.saveAll(snapshotList);
 
         log.info("Successfully created snapshot with {} questions for exam session {}",
                 questionOrder, session.getId());

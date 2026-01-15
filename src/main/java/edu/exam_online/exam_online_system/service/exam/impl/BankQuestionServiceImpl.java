@@ -34,6 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -171,7 +173,7 @@ public class BankQuestionServiceImpl implements BankQuestionService {
                 question.setBankQuestion(bankQuestion);
 
                 // Create answers
-                List<Answer> answers = questionRequest.getAnswers().stream()
+                Set<Answer> answers = questionRequest.getAnswers().stream()
                         .map(answerRequest -> {
                             return Answer.builder()
                                     .content(answerRequest.getContent())
@@ -179,7 +181,7 @@ public class BankQuestionServiceImpl implements BankQuestionService {
                                     .question(question)
                                     .build();
                         })
-                        .toList();
+                        .collect(Collectors.toSet());
                 question.setAnswers(answers);
             }
             existingQuestions.add(question);
@@ -190,7 +192,7 @@ public class BankQuestionServiceImpl implements BankQuestionService {
     }
 
     private void updateAnswers(Question question, List<AnswerUpdateRequest> answerRequests) {
-        List<Answer> existingAnswers = question.getAnswers();
+        Set<Answer> existingAnswers = question.getAnswers();
 
         // Collect answer IDs from request
         List<Long> requestAnswerIds = answerRequests.stream()
@@ -230,9 +232,9 @@ public class BankQuestionServiceImpl implements BankQuestionService {
     private Question createQuestion(QuestionCreationRequest request) {
         Question question = questionMapper.toEntity(request);
 
-        List<Answer> answers = request.getAnswers().stream()
+        Set<Answer> answers = request.getAnswers().stream()
                 .map(answerRequest -> answerMapper.toEntity(answerRequest, question))
-                .toList();
+                        .collect(Collectors.toSet());
         question.setAnswers(answers);
         return question;
     }

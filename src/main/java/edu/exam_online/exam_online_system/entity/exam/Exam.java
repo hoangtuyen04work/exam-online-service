@@ -25,7 +25,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @EntityListeners(AuditingEntityListener.class)
 @Entity
@@ -64,5 +66,5 @@ public class Exam {
 
     @Builder.Default
     @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<QuestionExam> questionExams = new ArrayList<>();
+    private Set<QuestionExam> questionExams = new HashSet<>();
 }
