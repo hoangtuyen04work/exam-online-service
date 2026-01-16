@@ -75,3 +75,10 @@ email:
 
 api:
   key: "${BREVO-KEY:null}"
+
+# OpenRouter AI Configuration
+openrouter:
+  api:
+    key: "${OPENROUTER_API_KEY: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}"
+    url: "https://openrouter.ai/api/v1/chat/completions"
+  model: "${OPENROUTER_MODEL:openai/gpt-3.5-turbo}"

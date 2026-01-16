@@ -14,7 +14,7 @@
 URL: jdbc:mysql://database-1.cfsky8quu95z.ap-southeast-1.rds.amazonaws.com:3306/exam_online?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
 DB_USERNAME: admin
 DB_PASSWORD: Tuyen2004.
-BREVO-KEY: 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
+BREVO-KEY: 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
 
 EMAIL: hoanghuutuyen060204@gmail.com
 EMAIL_PASSWORD: ctrw zreb qvdy vccx
