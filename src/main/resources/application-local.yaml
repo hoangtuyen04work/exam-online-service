@@ -11,16 +11,16 @@
 #; USERNAME=root
 #; PASSWORD=mLkEfsWYVPIZzswHQIPVxPHRtkbdiaUD
 
-URL: jdbc:mysql://localhost:3306/exam_online_system?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-DB_USERNAME: root
-DB_PASSWORD: 123
-BREVO-KEY: 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
+URL: jdbc:mysql://database-1.cfsky8quu95z.ap-southeast-1.rds.amazonaws.com:3306/exam_online?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+DB_USERNAME: admin
+DB_PASSWORD: Tuyen2004.
+BREVO-KEY: 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
 
 EMAIL: hoanghuutuyen060204@gmail.com
 EMAIL_PASSWORD: ctrw zreb qvdy vccx
 
-AZURE_CLIENT_ID: 5e8fd1e6-5c31-4b10-873a-c0cbb2565f02
-AZURE_CLIENT_SECRET: t3y8Q~RqbY.QtUlSYVdMz53x6GVHVOU3l5Gq1bXV
+AZURE_CLIENT_ID: 5eaf6423-187c-47d9-ba98-6592d56bbb8c
+AZURE_CLIENT_SECRET: NSb8Q~mGMMr2rywJ3t0zbEvZxSYTcQdki5tcSa-L
 AZURE_TENANT_ID: 0aa16d8a-a396-4e21-aa14-2a68a45786bc
 
 JWT_SECRET: 18x30Q0l4Sdr783UnbNl6drrmqSobLJB
